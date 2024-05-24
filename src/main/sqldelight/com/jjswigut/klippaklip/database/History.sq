@@ -1,0 +1,16 @@
+CREATE TABLE HistoryItem (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    text TEXT NOT NULL,
+    timestamp TEXT NOT NULL
+);
+
+insertHistoryItem:
+INSERT INTO HistoryItem(text, timestamp)
+VALUES (?, ?);
+
+selectAllHistoryItems:
+SELECT * FROM HistoryItem;
+
+deleteHistoryItem:
+DELETE FROM HistoryItem
+WHERE id = ?;

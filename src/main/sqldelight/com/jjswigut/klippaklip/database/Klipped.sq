@@ -1,0 +1,16 @@
+CREATE TABLE KlipEntity (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    itemText TEXT NOT NULL
+);
+
+insertKlipEntity:
+INSERT INTO KlipEntity(title, itemText)
+VALUES (?, ?);
+
+selectAllKlipEntities:
+SELECT * FROM KlipEntity;
+
+deleteKlipEntity:
+DELETE FROM KlipEntity
+WHERE id = ?;
