@@ -5,6 +5,7 @@ A desktop clipboard app built with Compose for Desktop:
 * for pinning frequently used snippets
 * TODO: Keeping a running history of recently copied items
 * TODO: Available from the menu bar
+* TODO: Search bar to quickly find snippets by title or content
 
 ## Libraries
 * SqlDelight for persistence
@@ -13,5 +14,5 @@ A desktop clipboard app built with Compose for Desktop:
 * Material for theming and UI components
 
 ## To Run:
-clone `https://github.com/JJSwigut/KlippaKlip`
-in terminal run `./gradlew run`
+1. clone `https://github.com/JJSwigut/KlippaKlip`
+2. in terminal run `./gradlew run`
