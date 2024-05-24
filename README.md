@@ -1,0 +1,17 @@
+# KlippaKlip
+
+A desktop clipboard app built with Compose for Desktop:
+* for storing and managing snippets
+* for pinning frequently used snippets
+* TODO: Keeping a running history of recently copied items
+* TODO: Available from the menu bar
+
+## Libraries
+* SqlDelight for persistence
+* TODO: Koin for dependency injection
+* Coroutines for asynchronous work
+* Material for theming and UI components
+
+## To Run:
+clone `https://github.com/JJSwigut/KlippaKlip`
+in terminal run `./gradlew run`

@@ -3,7 +3,7 @@ package data.models
 import androidx.compose.ui.text.AnnotatedString
 import com.jjswigut.klippaklip.database.HistoryEntity
 
-data class HistoryKlippable(
+data class HistoryKlip(
     val text: String,
     val timestamp: String,
 ): Klippable {
@@ -11,11 +11,11 @@ data class HistoryKlippable(
         get() = AnnotatedString(text)
 }
 
-private fun HistoryEntity.toKlip(): HistoryKlippable {
-    return HistoryKlippable(
+private fun HistoryEntity.toKlip(): HistoryKlip {
+    return HistoryKlip(
         text = this.text,
         timestamp = this.timestamp
     )
 }
 
-fun List<HistoryEntity>.toKlips():List<HistoryKlippable> = map { it.toKlip() }
+fun List<HistoryEntity>.toKlips():List<HistoryKlip> = map { it.toKlip() }

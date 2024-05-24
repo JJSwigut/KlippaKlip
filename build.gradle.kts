@@ -1,8 +1,9 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm")
-    id("org.jetbrains.compose")
+    kotlin("jvm") version "1.9.22"
+    id("org.jetbrains.compose") version "1.6.0"
+    id("app.cash.sqldelight") version "2.0.0"
 }
 
 group = "com.jjswigut"
@@ -20,6 +21,8 @@ dependencies {
     // (in a separate module for demo project and in testMain).
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
+    implementation(compose.materialIconsExtended)
+    implementation("app.cash.sqldelight:sqlite-driver:2.0.0")
 }
 
 compose.desktop {
@@ -30,6 +33,14 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "KlippaKlip"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.jjswigut.klippaklip")
         }
     }
 }

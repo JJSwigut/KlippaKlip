@@ -1,16 +1,16 @@
-CREATE TABLE HistoryItem (
+CREATE TABLE IF NOT EXISTS HistoryEntity (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     text TEXT NOT NULL,
     timestamp TEXT NOT NULL
 );
 
-insertHistoryItem:
-INSERT INTO HistoryItem(text, timestamp)
+insertHistoryEntity:
+INSERT INTO HistoryEntity(text, timestamp)
 VALUES (?, ?);
 
-selectAllHistoryItems:
-SELECT * FROM HistoryItem;
+selectAllHistoryEntitys:
+SELECT * FROM HistoryEntity;
 
-deleteHistoryItem:
-DELETE FROM HistoryItem
+deleteHistoryEntity:
+DELETE FROM HistoryEntity
 WHERE id = ?;

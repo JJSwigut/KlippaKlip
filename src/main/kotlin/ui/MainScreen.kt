@@ -1,3 +1,6 @@
+package ui
+
+import Strings
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation.Vertical
 import androidx.compose.foundation.gestures.scrollable
@@ -11,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -25,6 +29,8 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Pin
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -33,16 +39,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import data.models.HistoryKlippable
+import data.models.HistoryKlip
 import data.models.Klippable
 import data.models.Klip
 
 @Composable
 fun MainScreen(
     pinnedKlips: List<Klip>,
-    historyKlips: List<HistoryKlippable>,
+    historyKlips: List<HistoryKlip>,
     onCopyClick: (Klippable) -> Unit,
-    onCreatePinnedClip: () -> Unit,
+    onPinKlip: (Klip) -> Unit,
+    onCreateKlip: () -> Unit,
 ) {
     Surface(color = MaterialTheme.colors.background) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -53,7 +60,8 @@ fun MainScreen(
                 PinnedColumn(
                     modifier = Modifier.weight(3f),
                     pinnedKlips = pinnedKlips,
-                    onCopyClick = onCopyClick
+                    onCopyClick = onCopyClick,
+                    onPinClick = onPinKlip,
                 )
                 HistoryColumn(
                     modifier = Modifier.weight(1f),
@@ -67,7 +75,7 @@ fun MainScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(
-                    onClick = onCreatePinnedClip
+                    onClick = onCreateKlip
                 ) {
                     Text(text = Strings.createKlip)
                 }
@@ -81,7 +89,8 @@ fun MainScreen(
 private fun PinnedColumn(
     modifier: Modifier = Modifier,
     pinnedKlips: List<Klip>,
-    onCopyClick: (Klip) -> Unit
+    onCopyClick: (Klip) -> Unit,
+    onPinClick: (Klip) -> Unit,
 ) {
     Column(modifier) {
         if (pinnedKlips.isEmpty()) {
@@ -96,7 +105,8 @@ private fun PinnedColumn(
                     items(pinnedKlips) { klip ->
                         PinnedCard(
                             item = klip,
-                            onCopyClick = onCopyClick
+                            onCopyClick = onCopyClick,
+                            onPinClick = onPinClick,
                         )
                     }
                 }
@@ -108,8 +118,8 @@ private fun PinnedColumn(
 @Composable
 private fun HistoryColumn(
     modifier: Modifier = Modifier,
-    historyKlips: List<HistoryKlippable>,
-    onClick: (HistoryKlippable) -> Unit
+    historyKlips: List<HistoryKlip>,
+    onClick: (HistoryKlip) -> Unit
 ) {
     Column(modifier) {
         if (historyKlips.isEmpty()) {
@@ -133,6 +143,7 @@ private fun HistoryColumn(
 private fun PinnedCard(
     item: Klip,
     onCopyClick: (Klip) -> Unit,
+    onPinClick: (Klip) -> Unit,
 ) {
     Card(
         backgroundColor = Color.Gray
@@ -142,18 +153,29 @@ private fun PinnedCard(
                 .scrollable(state = rememberScrollState(), orientation = Vertical),
             horizontalAlignment = CenterHorizontally
         ) {
-            Row() {
+            Row(verticalAlignment = CenterVertically) {
                 item.title?.let { title ->
                     Text(
                         modifier = Modifier.weight(1f),
                         maxLines = 1,
                         text = title,
                         overflow = TextOverflow.Ellipsis,
-                        style = MaterialTheme.typography.h6
+                        style = MaterialTheme.typography.body1
                     )
                 } ?: Spacer(Modifier.weight(1f))
+
                 Icon(
-                    modifier = Modifier.size(20.dp).clickable {
+                    modifier = Modifier.size(15.dp).clickable {
+                        onPinClick(item)
+                    },
+                    imageVector = Icons.Default.PushPin,
+                    contentDescription = null,
+                )
+
+                Spacer(Modifier.width(8.dp))
+
+                Icon(
+                    modifier = Modifier.size(15.dp).clickable {
                         onCopyClick(item)
                     },
                     imageVector = Icons.Default.ContentCopy,

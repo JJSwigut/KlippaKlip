@@ -1,7 +1,17 @@
 package repository
 
-import com.jjswigut.klippaklip.Database
+import data.models.HistoryKlip
+import data.models.Klip
 
-class ItemRepo(db: Database) {
-    
+interface KlipRepo {
+
+    suspend fun getKlips(): Result<List<Klip>>
+
+    suspend fun addKlip(title: String?, klip: String, isPinned: Boolean)
+
+    suspend fun deleteKlip(klip: Klip)
+
+    suspend fun pinKlip(klip: Klip)
+
+    suspend fun getHistoryKlips(): Result<List<HistoryKlip>>
 }

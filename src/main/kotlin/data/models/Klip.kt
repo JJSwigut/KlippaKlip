@@ -1,23 +1,25 @@
 package data.models
 
 import androidx.compose.ui.text.AnnotatedString
-import com.jjswigut.klippaklip.database.PinnedEntity
+import com.jjswigut.klippaklip.database.KlipEntity
 
-data class PinnedKlip(
+data class Klip(
     val id: Long,
     val title: String? = null,
     val itemText: String,
-): Klip {
+    val isPinned: Boolean,
+): Klippable {
     override val klippedText: AnnotatedString
         get() = AnnotatedString(itemText)
 }
 
-private fun PinnedEntity.toKlip(): PinnedKlip {
-    return PinnedKlip(
+private fun KlipEntity.toKlip(): Klip {
+    return Klip(
         id = id,
         title = title,
-        itemText = itemText
+        itemText = itemText,
+        isPinned = isPinned == 1L
     )
 }
 
-fun List<PinnedEntity>.toKlips():List<PinnedKlip> = map { it.toKlip() }
+fun List<KlipEntity>.toKlips():List<Klip> = map { it.toKlip() }
