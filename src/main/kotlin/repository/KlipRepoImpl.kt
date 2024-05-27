@@ -40,7 +40,7 @@ class KlipRepoImpl(private val db: Database): KlipRepo {
         runCatching {
             db.klippedQueries.updateKlipEntityIsPinned(
                 id = klip.id,
-                isPinned = if(klip.isPinned) 1 else 0
+                isPinned = if (klip.isPinned) 0 else 1
             )
         }
     }
@@ -56,5 +56,23 @@ class KlipRepoImpl(private val db: Database): KlipRepo {
                 Result.failure(it)
             }
         )
+    }
+
+    override suspend fun saveHistoryKlip(string: String) {
+        runCatching {
+            val historyKlips = db.historyQueries.selectAllHistoryEntitys().executeAsList()
+            val nonExistentKlip = historyKlips.none { it.text == string }
+            if (nonExistentKlip) {
+                db.historyQueries.transaction {
+
+                    db.historyQueries.insertHistoryEntity(string, System.currentTimeMillis())
+
+                    if (historyKlips.count() == 50) {
+                        val oldestKlip = historyKlips.minBy { it.timestamp }
+                        db.historyQueries.deleteHistoryEntity(oldestKlip.id)
+                    }
+                }
+            }
+        }
     }
 }

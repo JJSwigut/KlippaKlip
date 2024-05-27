@@ -13,5 +13,7 @@ interface KlipRepo {
 
     suspend fun pinKlip(klip: Klip)
 
+    suspend fun saveHistoryKlip(string: String)
+
     suspend fun getHistoryKlips(): Result<List<HistoryKlip>>
 }

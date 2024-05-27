@@ -14,7 +14,7 @@ data class HistoryKlip(
 private fun HistoryEntity.toKlip(): HistoryKlip {
     return HistoryKlip(
         text = this.text,
-        timestamp = this.timestamp
+        timestamp = this.timestamp.toString()
     )
 }
 

@@ -23,6 +23,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.materialIconsExtended)
     implementation("app.cash.sqldelight:sqlite-driver:2.0.0")
+    implementation("com.github.kwhat:jnativehook:2.2.1")
 }
 
 compose.desktop {
