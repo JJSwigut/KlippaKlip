@@ -10,7 +10,7 @@ import feature.Output
 private typealias KeyStroke = com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 @Composable
 fun GlobalKeyListener(
-    onShow: (Boolean) -> Unit
+    onOutput: (KeyListenerOutput) -> Unit
 ){
     DisposableEffect(Unit) {
         val keyListener = object : NativeKeyListener {
@@ -21,10 +21,10 @@ fun GlobalKeyListener(
                 when (e?.keyCode) {
                     KeyStroke.VC_CONTROL -> ctrlPressed = true
                     KeyStroke.VC_A -> aPressed = true
-                    KeyStroke.VC_ESCAPE -> onShow(false)
+                    KeyStroke.VC_ESCAPE -> onOutput(KeyListenerOutput.ShowKlips(false))
                 }
                 if (ctrlPressed && aPressed) {
-                    onShow(true)
+                    onOutput(KeyListenerOutput.ShowKlips(true))
                 }
             }
 
@@ -54,4 +54,6 @@ fun GlobalKeyListener(
     }
 }
 
-data class KeyOutput(val showMainScreen: Boolean): Output
+sealed interface KeyListenerOutput: Output {
+    data class ShowKlips(val shouldShow: Boolean) : KeyListenerOutput
+}

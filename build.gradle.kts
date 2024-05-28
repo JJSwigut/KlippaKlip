@@ -20,8 +20,6 @@ dependencies {
     implementation(compose.materialIconsExtended)
     implementation(libs.sqlDelight.driver)
     implementation(libs.jNativeHook)
-    implementation(libs.voyager.screenmodel)
-    implementation(libs.voyager.navigator)
 }
 
 compose.desktop {

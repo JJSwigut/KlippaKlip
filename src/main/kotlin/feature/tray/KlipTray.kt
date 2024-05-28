@@ -7,8 +7,8 @@ import androidx.compose.ui.window.MenuScope
 import androidx.compose.ui.window.Tray
 import androidx.compose.ui.window.rememberTrayState
 import feature.AppCoordinator
-import feature.tray.MenuOutput.Exit
-import feature.tray.MenuOutput.ShowKlips
+import feature.Output
+import feature.tray.MenuOutput.*
 
 @Composable
 fun ApplicationScope.KlipTray(coordinator: AppCoordinator) {
@@ -23,12 +23,14 @@ fun ApplicationScope.KlipTray(coordinator: AppCoordinator) {
 
 @Composable
 private fun MenuScope.AppMenu(coordinator: AppCoordinator) {
-    Item("Klips", onClick = { coordinator.handleMenuOutput(ShowKlips) })
+    Item("Klips", onClick = { coordinator.handleOutput(ShowKlips) })
+    Item("Create", onClick = { coordinator.handleOutput(ShowCreate) })
+    Item("Settings", onClick = { coordinator.handleOutput(ShowSettings) })
     Separator()
-    Item("Exit", onClick = { coordinator.handleMenuOutput(Exit) })
+    Item("Exit", onClick = { coordinator.handleOutput(Exit) })
 }
 
-sealed interface MenuOutput {
+sealed interface MenuOutput: Output {
     data object ShowKlips : MenuOutput
     data object ShowSettings : MenuOutput
     data object ShowCreate : MenuOutput

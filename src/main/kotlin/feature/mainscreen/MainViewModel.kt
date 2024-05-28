@@ -1,47 +1,50 @@
 package feature.mainscreen
 
-import cafe.adriel.voyager.core.model.StateScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
+import base.DesktopViewModel
+import com.sun.tools.javac.Main
 import data.models.HistoryKlip
 import data.models.Klip
 import data.models.Klippable
 import feature.AppCoordinator
+import feature.Output
 import feature.mainscreen.MainAction.HandleCopy
 import feature.mainscreen.MainAction.HandleCreateClicked
 import feature.mainscreen.MainAction.HandleDelete
 import feature.mainscreen.MainAction.HandlePin
 import feature.mainscreen.MainAction.Initialize
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import repository.KlipRepo
+import repository.KlipRepoImpl
 
 class MainViewModel(
-    val coordinator: AppCoordinator,
-    val dispatcher: CoroutineDispatcher,
-) : StateScreenModel<MainViewState>(MainViewState()) {
+    private val dispatcher: CoroutineDispatcher,
+    private val repo: KlipRepo,
+    private val output: (Output) -> Unit,
+) : DesktopViewModel<MainViewState>(MainViewState()) {
 
     init {
         handleAction(Initialize)
     }
 
         fun handleAction(action: MainAction) {
-            screenModelScope.launch(dispatcher){
+            viewModelScope.launch(dispatcher){
                 when(action){
                     is Initialize -> updateKlips()
-                    is HandleCopy -> TODO()
-                    is HandleCreateClicked -> TODO()
-                    is HandleDelete -> TODO()
-                    is HandlePin -> TODO()
+                    is HandleCopy -> sendOutput(MainOutput.CopyKlip(action.klip))
+                    is HandleCreateClicked -> sendOutput(MainOutput.CreateKlip)
+                    is HandleDelete -> repo.deleteKlip(action.klip)
+                    is HandlePin -> repo.pinKlip(action.klip)
                 }
             }
         }
 
     private suspend fun updateKlips() {
-        coordinator.repo.getKlips().fold(
+        repo.getKlips().fold(
             onSuccess = { klips ->
                 val (pinnedKlips, regularKlips) = klips.partition { it.isPinned }
-                mutableState.update {
-                    it.copy(
+                updateState {
+                    copy(
                         pinnedKlips = pinnedKlips,
                         klips = regularKlips
                     )
@@ -53,7 +56,9 @@ class MainViewModel(
         )
     }
 
-
+    override fun sendOutput(output: Output) {
+        output(output)
+    }
 }
 
 data class MainViewState(
@@ -68,4 +73,10 @@ sealed interface MainAction {
     data class HandleDelete(val klip: Klip): MainAction
     data class HandleCopy(val klip: Klippable): MainAction
     data class HandlePin(val klip: Klip): MainAction
+}
+
+sealed interface MainOutput : Output {
+    data object CreateKlip: MainOutput
+    data class EditKlip(val klip: Klip): MainOutput
+    data class CopyKlip(val klip: Klippable): MainOutput
 }
