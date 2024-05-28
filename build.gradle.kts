@@ -1,9 +1,9 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm") version "1.9.22"
-    id("org.jetbrains.compose") version "1.6.0"
-    id("app.cash.sqldelight") version "2.0.0"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.compose)
+    alias(libs.plugins.sqlDelight)
 }
 
 group = "com.jjswigut"
@@ -16,14 +16,12 @@ repositories {
 }
 
 dependencies {
-    // Note, if you develop a library, you should use compose.desktop.common.
-    // compose.desktop.currentOs should be used in launcher-sourceSet
-    // (in a separate module for demo project and in testMain).
-    // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation(compose.materialIconsExtended)
-    implementation("app.cash.sqldelight:sqlite-driver:2.0.0")
-    implementation("com.github.kwhat:jnativehook:2.2.1")
+    implementation(libs.sqlDelight.driver)
+    implementation(libs.jNativeHook)
+    implementation(libs.voyager.screenmodel)
+    implementation(libs.voyager.navigator)
 }
 
 compose.desktop {

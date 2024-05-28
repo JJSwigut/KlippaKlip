@@ -1,0 +1,18 @@
+[versions]
+sqlDelight = "2.0.0"
+jNativeHook = "2.2.1"
+voyager = "1.0.0"
+kotlin = "1.9.22"
+compose = "1.6.0"
+
+[libraries]
+sqlDelight-driver = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
+jNativeHook = { group = "com.github.kwhat", name = "jnativehook", version.ref = "jNativeHook" }
+voyager-screenmodel = { group = "cafe.adriel.voyager", name = "voyager-screenmodel", version.ref = "voyager" }
+voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator", version.ref = "voyager" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+[bundles]
