@@ -41,7 +41,6 @@ import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
@@ -52,20 +51,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import data.models.HistoryKlip
 import data.models.Klip
-import data.models.Klippable
+import feature.mainscreen.MainAction
+import feature.mainscreen.MainAction.HandleCopy
+import feature.mainscreen.MainAction.HandleCreateClicked
+import feature.mainscreen.MainAction.HandleDelete
+import feature.mainscreen.MainAction.HandlePin
+import feature.mainscreen.MainViewState
 import utils.onDoubleClick
 
 @Composable
-fun MainScreen(
-    klips: List<Klip>,
-    historyKlips: List<HistoryKlip>,
-    onCopyClick: (Klippable) -> Unit,
-    onPinKlip: (Klip) -> Unit,
-    onCreateKlip: () -> Unit,
-    onDeleteKlip: (Klip) -> Unit,
+fun MainView(
+    viewState: MainViewState,
+    actionHandler: (MainAction) -> Unit,
 ) {
-    val (pinnedKlips, regularClips) = remember(klips) { klips.partition { it.isPinned } }
-
     Surface(
         color = Color.Black.copy(alpha = .7f), shape = MaterialTheme.shapes.medium
     ) {
@@ -75,19 +73,17 @@ fun MainScreen(
                 verticalAlignment = CenterVertically
             ) {
                 Column(modifier = Modifier.weight(3f)) {
-                    if (klips.isEmpty()) {
+                    if (viewState.pinnedKlips.isEmpty() && viewState.klips.isEmpty()) {
                         EmptyState(
                             modifier = Modifier.padding(8.dp),
                             type = Strings.pinnedItems
                         )
                     } else {
-                        if (pinnedKlips.isNotEmpty()) {
+                        if (viewState.pinnedKlips.isNotEmpty()) {
                             PinnedKlipRow(
                                 modifier = Modifier.weight(1f),
-                                pinnedKlips = pinnedKlips,
-                                onCopyClick = onCopyClick,
-                                onPinClick = onPinKlip,
-                                onDeleteClick = onDeleteKlip,
+                                pinnedKlips = viewState.pinnedKlips,
+                                actionHandler = actionHandler
                             )
                             Divider(
                                 modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -97,18 +93,16 @@ fun MainScreen(
                         }
                         KlipColumn(
                             modifier = Modifier.weight(3f),
-                            klips = regularClips,
-                            onCopyClick = onCopyClick,
-                            onPinClick = onPinKlip,
-                            onDeleteClick = onDeleteKlip,
+                            klips = viewState.klips,
+                            actionHandler = actionHandler,
                         )
                     }
                 }
                 Spacer(Modifier.width(8.dp))
                 HistoryColumn(
                     modifier = Modifier.weight(1f),
-                    historyKlips = historyKlips,
-                    onClick = onCopyClick
+                    historyKlips = viewState.historyKlips,
+                    actionHandler = actionHandler
                 )
             }
             Row(
@@ -117,7 +111,7 @@ fun MainScreen(
                 horizontalArrangement = Arrangement.Center
             ) {
                 Button(
-                    onClick = onCreateKlip
+                    onClick = { actionHandler(HandleCreateClicked) }
                 ) {
                     Text(text = Strings.createKlip)
                 }
@@ -130,9 +124,7 @@ fun MainScreen(
 private fun KlipColumn(
     modifier: Modifier = Modifier,
     klips: List<Klip>,
-    onCopyClick: (Klip) -> Unit,
-    onPinClick: (Klip) -> Unit,
-    onDeleteClick: (Klip) -> Unit,
+    actionHandler: (MainAction) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = modifier,
@@ -144,9 +136,7 @@ private fun KlipColumn(
             items(klips) { klip ->
                 KlipCard(
                     item = klip,
-                    onCopyClick = onCopyClick,
-                    onPinClick = onPinClick,
-                    onDeleteClick = onDeleteClick,
+                    actionHandler = actionHandler
                 )
             }
         }
@@ -158,7 +148,7 @@ private fun KlipColumn(
 private fun HistoryColumn(
     modifier: Modifier = Modifier,
     historyKlips: List<HistoryKlip>,
-    onClick: (HistoryKlip) -> Unit
+    actionHandler: (MainAction) -> Unit
 ) {
 
     val listState = rememberLazyListState()
@@ -197,7 +187,7 @@ private fun HistoryColumn(
                         Text(
                             color = MaterialTheme.colors.onPrimary,
                             modifier = Modifier.fillMaxWidth()
-                                .onDoubleClick { onClick(klip) },
+                                .onDoubleClick { actionHandler(HandleCopy(klip)) },
                             text = klip.text,
                             maxLines = 2,
                             style = MaterialTheme.typography.body2,
@@ -232,9 +222,7 @@ fun KlipTip(
 private fun PinnedKlipRow(
     modifier: Modifier = Modifier,
     pinnedKlips: List<Klip>,
-    onCopyClick: (Klip) -> Unit,
-    onPinClick: (Klip) -> Unit,
-    onDeleteClick: (Klip) -> Unit,
+    actionHandler: (MainAction) -> Unit,
 ) {
     LazyRow(
         modifier = modifier,
@@ -244,9 +232,7 @@ private fun PinnedKlipRow(
         items(pinnedKlips) { klip ->
             KlipCard(
                 item = klip,
-                onCopyClick = onCopyClick,
-                onPinClick = onPinClick,
-                onDeleteClick = onDeleteClick,
+                actionHandler = actionHandler,
             )
         }
     }
@@ -256,9 +242,7 @@ private fun PinnedKlipRow(
 @Composable
 private fun KlipCard(
     item: Klip,
-    onCopyClick: (Klip) -> Unit,
-    onPinClick: (Klip) -> Unit,
-    onDeleteClick: (Klip) -> Unit,
+    actionHandler: (MainAction) -> Unit
 ) {
     TooltipArea(
         delayMillis = 750,
@@ -268,7 +252,7 @@ private fun KlipCard(
     ) {
         Card(
             modifier = Modifier.onDoubleClick {
-                onCopyClick(item)
+                actionHandler(HandleCopy(item))
             },
             backgroundColor = MaterialTheme.colors.primary,
         ) {
@@ -303,9 +287,9 @@ private fun KlipCard(
                 CardActions(
                     modifier = Modifier.padding(8.dp).weight(1f, fill = false),
                     pinIcon = pinIcon,
-                    onCopy = { onCopyClick(item) },
-                    onPin = { onPinClick(item) },
-                    onDelete = { onDeleteClick(item) }
+                    onCopy = { actionHandler(HandleCopy(item)) },
+                    onPin = { actionHandler(HandlePin(item)) },
+                    onDelete = { actionHandler(HandleDelete(item)) }
                 )
             }
         }

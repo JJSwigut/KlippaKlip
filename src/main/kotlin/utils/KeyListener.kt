@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
+import feature.Output
 
 
 private typealias KeyStroke = com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
@@ -11,7 +12,6 @@ private typealias KeyStroke = com.github.kwhat.jnativehook.keyboard.NativeKeyEve
 fun GlobalKeyListener(
     onShow: (Boolean) -> Unit
 ){
-
     DisposableEffect(Unit) {
         val keyListener = object : NativeKeyListener {
             private var ctrlPressed = false
@@ -53,3 +53,5 @@ fun GlobalKeyListener(
         }
     }
 }
+
+data class KeyOutput(val showMainScreen: Boolean): Output

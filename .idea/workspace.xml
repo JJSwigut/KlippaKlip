@@ -5,25 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa39d4d5-a694-4f76-bddc-52f0c9800e7e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/feature/AppCoordinator.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorScreen.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainScreen.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/feature/tray/KlipTray.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.run/desktop.run.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.run/desktop.run.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/klippaklip.db" beforeDir="false" afterPath="$PROJECT_DIR$/klippaklip.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/models/HistoryKlip.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/models/HistoryKlip.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/models/Klip.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/models/Klip.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/models/Klippable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/models/Klippable.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/persistence/DbFactory.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/persistence/DbFactory.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepo.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepoImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepoImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/CreateDialog.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/CreateDialog.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/MainScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/MainScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utils/Strings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utils/Strings.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database/History.sq" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database/History.sq" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database/Klipped.sq" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database/Klipped.sq" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/MainScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/MainView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utils/KeyListener.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utils/KeyListener.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,7 +100,15 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.compose.foundation/foundation-desktop/1.6.0/582ac720187394285056a856bc2ab37710c68c75/foundation-desktop-1.6.0-sources.jar!/commonMain/androidx/compose/foundation/Focusable.kt" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -137,7 +136,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "refactor",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/swig/StudioProjects/KlippaKlip",
     "node.js.detected.package.eslint": "true",
@@ -157,6 +156,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+      <recent name="$PROJECT_DIR$/src/main/resources/drawable" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/ui" />
       <recent name="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/ui/main" />
@@ -237,6 +238,47 @@
       <workItem from="1716557932426" duration="3536000" />
       <workItem from="1716561507157" duration="28000" />
     </task>
+    <task id="LOCAL-00001" summary="readme">
+      <option name="closed" value="true" />
+      <created>1716580739082</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1716580739082</updated>
+    </task>
+    <task id="LOCAL-00002" summary="readme">
+      <option name="closed" value="true" />
+      <created>1716580856470</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1716580856470</updated>
+    </task>
+    <task id="LOCAL-00003" summary="readme">
+      <option name="closed" value="true" />
+      <created>1716580906569</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1716580906569</updated>
+    </task>
+    <task id="LOCAL-00004" summary="wip">
+      <option name="closed" value="true" />
+      <created>1716825407005</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1716825407005</updated>
+    </task>
+    <task id="LOCAL-00005" summary="version catalogs">
+      <option name="closed" value="true" />
+      <created>1716855513515</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1716855513515</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -244,6 +286,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="readme" />
+    <MESSAGE value="wip" />
+    <MESSAGE value="version catalogs" />
+    <option name="LAST_COMMIT_MESSAGE" value="version catalogs" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

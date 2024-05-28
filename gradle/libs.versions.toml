@@ -15,4 +15,5 @@ voyager-navigator = { group = "cafe.adriel.voyager", name = "voyager-navigator",
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
+
 [bundles]
