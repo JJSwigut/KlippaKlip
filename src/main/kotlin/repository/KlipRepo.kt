@@ -1,11 +1,15 @@
 package repository
 
+import com.jjswigut.klippaklip.database.HistoryEntity
+import com.jjswigut.klippaklip.database.KlipEntity
 import data.models.HistoryKlip
 import data.models.Klip
+import kotlinx.coroutines.flow.Flow
 
 interface KlipRepo {
 
-    suspend fun getKlips(): Result<List<Klip>>
+    val klips: Flow<List<KlipEntity>>
+    val historyKlips: Flow<List<HistoryEntity>>
 
     suspend fun addKlip(title: String?, klip: String, isPinned: Boolean)
 
@@ -15,5 +19,5 @@ interface KlipRepo {
 
     suspend fun saveHistoryKlip(string: String)
 
-    suspend fun getHistoryKlips(): Result<List<HistoryKlip>>
+    suspend fun deleteAllHistory()
 }

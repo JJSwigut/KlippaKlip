@@ -6,6 +6,7 @@ compose = "1.6.0"
 
 [libraries]
 sqlDelight-driver = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
+sqlDelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqlDelight" }
 jNativeHook = { group = "com.github.kwhat", name = "jnativehook", version.ref = "jNativeHook" }
 
 [plugins]

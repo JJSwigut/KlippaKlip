@@ -18,6 +18,7 @@ import feature.tray.MenuOutput.Exit
 import feature.tray.MenuOutput.ShowCreate
 import feature.tray.MenuOutput.ShowKlips
 import feature.tray.MenuOutput.ShowSettings
+import java.awt.GraphicsEnvironment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,7 +31,6 @@ class AppCoordinator(
     val repo: KlipRepoImpl,
     val clipboardManager: ClipboardManager
 ) {
-
     private val scope = CoroutineScope(Dispatchers.IO)
 
     private var currentWindow by mutableStateOf<(@Composable () -> Unit)?>(null)

@@ -8,8 +8,11 @@ insertHistoryEntity:
 INSERT INTO HistoryEntity(text, timestamp)
 VALUES (?, ?);
 
-selectAllHistoryEntitys:
+selectAllHistory:
 SELECT * FROM HistoryEntity;
+
+deleteAllHistory:
+DELETE FROM HistoryEntity;
 
 deleteHistoryEntity:
 DELETE FROM HistoryEntity

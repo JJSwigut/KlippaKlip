@@ -5,25 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa39d4d5-a694-4f76-bddc-52f0c9800e7e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/base/DesktopViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/utils/KlipListener.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/utils/KlipboardManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/klippaklip.db" beforeDir="false" afterPath="$PROJECT_DIR$/klippaklip.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/local.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/AppState.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/AppCoordinator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/AppCoordinator.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/tray/KlipTray.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/tray/KlipTray.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/MainView.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utils/KeyListener.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utils/KeyListener.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepoImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepoImpl.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/CreateDialog.kt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utils/Modifiers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utils/Modifiers.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utils/Strings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utils/Strings.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database/History.sq" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database/History.sq" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -146,7 +142,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "refactor",
+    "git-widget-placeholder": "hoverStuff",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/swig/StudioProjects/KlippaKlip",
     "node.js.detected.package.eslint": "true",

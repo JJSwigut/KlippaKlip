@@ -1,6 +1,13 @@
 package feature.mainscreen
 
 import Strings
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.background
@@ -8,6 +15,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation.Vertical
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.layout.Arrangement.spacedBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +23,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,7 +38,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Button
-import androidx.compose.material.Card
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -37,18 +46,27 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Center
+import androidx.compose.ui.Alignment.Companion.CenterEnd
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -62,6 +80,7 @@ import feature.mainscreen.MainAction.HandleCreateClicked
 import feature.mainscreen.MainAction.HandleDelete
 import feature.mainscreen.MainAction.HandlePin
 import utils.onDoubleClick
+import utils.onHover
 
 @Composable
 fun MainScreen(
@@ -131,15 +150,22 @@ private fun MainContent(
                     actionHandler = actionHandler
                 )
             }
+            Spacer(Modifier.height(8.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = SpaceBetween
             ) {
                 Button(
                     onClick = { actionHandler(HandleCreateClicked) }
                 ) {
                     Text(text = Strings.createKlip)
+                }
+
+                Button(
+                    onClick = { actionHandler(MainAction.HandleDeleteHistory) }
+                ) {
+                    Text(text = Strings.deleteHistory)
                 }
             }
         }
@@ -181,14 +207,13 @@ private fun HistoryColumn(
 
     LaunchedEffect(historyKlips) {
         if (historyKlips.isNotEmpty()) {
-            listState.animateScrollToItem(historyKlips.indexOf(historyKlips[0]))
+            listState.animateScrollToItem(historyKlips.lastIndex)
         }
     }
 
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
-            .background(color = MaterialTheme.colors.primary, shape = MaterialTheme.shapes.medium)
             .fillMaxHeight()
     ) {
         if (historyKlips.isEmpty()) {
@@ -199,7 +224,7 @@ private fun HistoryColumn(
         } else {
             LazyColumn(
                 state = listState,
-                modifier = Modifier.padding(8.dp),
+                modifier = Modifier.padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.Center,
                 reverseLayout = true
             ) {
@@ -210,14 +235,25 @@ private fun HistoryColumn(
                             KlipTip(klip.text)
                         }
                     ) {
-                        Text(
-                            color = MaterialTheme.colors.onPrimary,
-                            modifier = Modifier.fillMaxWidth()
-                                .onDoubleClick { actionHandler(HandleCopy(klip)) },
-                            text = klip.text,
-                            maxLines = 2,
-                            style = MaterialTheme.typography.body2,
-                        )
+                        Column {
+                            Box(
+                                modifier = Modifier.background(
+                                    color = MaterialTheme.colors.primary,
+                                    shape = MaterialTheme.shapes.medium
+                                ).onHover().onDoubleClick { actionHandler(HandleCopy(klip)) },
+                                contentAlignment = Center
+                            ) {
+                                Text(
+                                    color = MaterialTheme.colors.onPrimary,
+                                    modifier = Modifier.fillMaxWidth().padding(2.dp),
+                                    text = klip.text,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.body2,
+                                )
+                            }
+                            Spacer(Modifier.height(2.dp))
+                        }
                     }
                 }
             }
@@ -270,58 +306,66 @@ private fun KlipCard(
     item: Klip,
     actionHandler: (MainAction) -> Unit,
 ) {
-    TooltipArea(
-        delayMillis = 750,
-        tooltip = {
-            KlipTip(item.itemText)
-        }
-    ) {
-        Card(
-            modifier = Modifier.onDoubleClick {
-                actionHandler(HandleCopy(item))
-            },
-            backgroundColor = MaterialTheme.colors.primary,
-        ) {
-            Row(modifier = Modifier.size(width = 200.dp, height = 150.dp)) {
-                Column(modifier = Modifier.weight(5f).padding(8.dp)) {
-                    item.title?.let { title ->
-                        Text(
-                            color = MaterialTheme.colors.onPrimary,
-                            maxLines = 1,
-                            text = title,
-                            overflow = TextOverflow.Ellipsis,
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.body2
-                        )
-                    }
+    var showActions by remember { mutableStateOf(false) }
 
+    Box(
+        modifier = Modifier
+            .onDoubleClick {
+                actionHandler(HandleCopy(item))
+            }
+            .onHover {
+                showActions = it
+            }
+            .background(MaterialTheme.colors.primary)
+            .size(width = 200.dp, height = 150.dp)
+    ) {
+        TooltipArea(
+            delayMillis = 750,
+            tooltip = {
+                KlipTip(item.itemText)
+            }
+        ) {
+            Column(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxSize()
+            ) {
+                item.title?.let { title ->
                     Text(
                         color = MaterialTheme.colors.onPrimary,
-                        text = item.itemText,
+                        maxLines = 1,
+                        text = title,
                         overflow = TextOverflow.Ellipsis,
+                        fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.body2
                     )
                 }
-                Box(
-                    modifier = Modifier.width(1.dp)
-                        .background(color = MaterialTheme.colors.onPrimary)
-                        .fillMaxHeight()
-                )
 
-                val pinIcon = if (item.isPinned) Icons.Outlined.PushPin else Icons.Filled.PushPin
-
-                CardActions(
-                    modifier = Modifier.padding(8.dp).weight(1f, fill = false),
-                    pinIcon = pinIcon,
-                    onCopy = { actionHandler(HandleCopy(item)) },
-                    onPin = { actionHandler(HandlePin(item)) },
-                    onDelete = { actionHandler(HandleDelete(item)) }
+                Text(
+                    color = MaterialTheme.colors.onPrimary,
+                    text = item.itemText,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.body2
                 )
             }
         }
+        AnimatedVisibility(
+            modifier = Modifier.align(CenterEnd),
+            visible = showActions,
+            enter = slideInHorizontally(initialOffsetX = { it / 2 }) + fadeIn(),
+            exit = slideOutHorizontally(targetOffsetX = { it / 2 }) + fadeOut()
+        ) {
+            CardActions(
+                modifier = Modifier.fillMaxHeight().width(20.dp),
+                pinIcon = if (item.isPinned) Icons.Outlined.PushPin else Icons.Filled.PushPin,
+                onCopy = { actionHandler(HandleCopy(item)) },
+                onPin = { actionHandler(HandlePin(item)) },
+                onDelete = { actionHandler(HandleDelete(item)) },
+                onEdit = { actionHandler(MainAction.HandleEdit(item)) }
+            )
+        }
     }
 }
-
 @Composable
 private fun CardActions(
     modifier: Modifier = Modifier,
@@ -329,22 +373,37 @@ private fun CardActions(
     onCopy: () -> Unit,
     onPin: () -> Unit,
     onDelete: () -> Unit,
+    onEdit: () -> Unit,
 ) {
-    Column(modifier) {
+    Column(
+        modifier.background(
+            color = Color.Black.copy(alpha = .8f),
+            shape = MaterialTheme.shapes.medium
+        ), horizontalAlignment = CenterHorizontally
+    ) {
         Icon(
             modifier = Modifier.size(15.dp).weight(1f).padding(1.dp).clickable { onPin() },
             imageVector = pinIcon,
             contentDescription = null,
+            tint = MaterialTheme.colors.onPrimary
         )
         Icon(
             modifier = Modifier.size(15.dp).weight(1f).padding(1.dp).clickable { onCopy() },
             imageVector = Icons.Default.ContentCopy,
             contentDescription = null,
+            tint = MaterialTheme.colors.onPrimary
+        )
+        Icon(
+            modifier = Modifier.size(15.dp).weight(1f).padding(1.dp).clickable { onEdit() },
+            imageVector = Icons.Default.Edit,
+            contentDescription = null,
+            tint = MaterialTheme.colors.onPrimary
         )
         Icon(
             modifier = Modifier.size(15.dp).weight(1f).padding(1.dp).clickable { onDelete() },
             imageVector = Icons.Default.Delete,
             contentDescription = null,
+            tint = MaterialTheme.colors.onPrimary
         )
     }
 }
@@ -355,6 +414,7 @@ private fun EmptyState(
     type: String,
 ) {
     Text(
+        textAlign = TextAlign.Center,
         modifier = modifier,
         color = MaterialTheme.colors.onPrimary,
         text = Strings.emptyStateString(type), style = MaterialTheme.typography.body2

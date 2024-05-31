@@ -1,24 +1,18 @@
 package repository
 
+import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToList
 import com.jjswigut.klippaklip.Database
-import data.models.HistoryKlip
+import com.jjswigut.klippaklip.database.HistoryEntity
+import com.jjswigut.klippaklip.database.KlipEntity
 import data.models.Klip
-import data.models.toKlips
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 
 class KlipRepoImpl(private val db: Database): KlipRepo {
 
-    override suspend fun getKlips(): Result<List<Klip>> {
-        return runCatching {
-            db.klippedQueries.selectAllKlipEntities().executeAsList()
-        }.fold(
-            onSuccess = {
-                Result.success(it.toKlips())
-            },
-            onFailure = {
-                Result.failure(it)
-            }
-        )
-    }
+    override val historyKlips: Flow<List<HistoryEntity>> = db.historyQueries.selectAllHistory().asFlow().mapToList(Dispatchers.IO)
+    override val klips: Flow<List<KlipEntity>> = db.klippedQueries.selectAllKlipEntities().asFlow().mapToList(Dispatchers.IO)
 
     override suspend fun addKlip(title: String?, klip: String, isPinned: Boolean) {
         runCatching {
@@ -45,22 +39,9 @@ class KlipRepoImpl(private val db: Database): KlipRepo {
         }
     }
 
-    override suspend fun getHistoryKlips(): Result<List<HistoryKlip>> {
-        return runCatching {
-            db.historyQueries.selectAllHistoryEntitys().executeAsList()
-        }.fold(
-            onSuccess = {
-                Result.success(it.toKlips())
-            },
-            onFailure = {
-                Result.failure(it)
-            }
-        )
-    }
-
     override suspend fun saveHistoryKlip(string: String) {
         runCatching {
-            val historyKlips = db.historyQueries.selectAllHistoryEntitys().executeAsList()
+            val historyKlips = db.historyQueries.selectAllHistory().executeAsList()
             val nonExistentKlip = historyKlips.none { it.text == string }
             if (nonExistentKlip) {
                 db.historyQueries.transaction {
@@ -73,6 +54,12 @@ class KlipRepoImpl(private val db: Database): KlipRepo {
                     }
                 }
             }
+        }
+    }
+
+    override suspend fun deleteAllHistory() {
+        runCatching {
+            db.historyQueries.deleteAllHistory()
         }
     }
 }

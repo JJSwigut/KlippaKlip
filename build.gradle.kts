@@ -19,6 +19,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.materialIconsExtended)
     implementation(libs.sqlDelight.driver)
+    implementation(libs.sqlDelight.coroutines)
     implementation(libs.jNativeHook)
 }
 

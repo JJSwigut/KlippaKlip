@@ -5,14 +5,13 @@ import com.sun.tools.javac.Main
 import data.models.HistoryKlip
 import data.models.Klip
 import data.models.Klippable
+import data.models.toKlips
 import feature.AppCoordinator
 import feature.Output
-import feature.mainscreen.MainAction.HandleCopy
-import feature.mainscreen.MainAction.HandleCreateClicked
-import feature.mainscreen.MainAction.HandleDelete
-import feature.mainscreen.MainAction.HandlePin
-import feature.mainscreen.MainAction.Initialize
+import feature.mainscreen.MainAction.*
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.launch
 import repository.KlipRepo
 import repository.KlipRepoImpl
@@ -30,30 +29,34 @@ class MainViewModel(
         fun handleAction(action: MainAction) {
             viewModelScope.launch(dispatcher){
                 when(action){
-                    is Initialize -> updateKlips()
+                    is Initialize -> intialize()
                     is HandleCopy -> sendOutput(MainOutput.CopyKlip(action.klip))
                     is HandleCreateClicked -> sendOutput(MainOutput.CreateKlip)
                     is HandleDelete -> repo.deleteKlip(action.klip)
                     is HandlePin -> repo.pinKlip(action.klip)
+                    is HandleDeleteHistory -> repo.deleteAllHistory()
+                    is HandleEdit -> sendOutput(MainOutput.EditKlip(action.klip))
                 }
             }
         }
 
-    private suspend fun updateKlips() {
-        repo.getKlips().fold(
-            onSuccess = { klips ->
-                val (pinnedKlips, regularKlips) = klips.partition { it.isPinned }
-                updateState {
-                    copy(
-                        pinnedKlips = pinnedKlips,
-                        klips = regularKlips
-                    )
-                }
-            },
-            onFailure = {
-                /* no-op */
+    private suspend fun intialize() {
+        combine(repo.klips,repo.historyKlips){
+            klips, historyKlips ->
+            Pair(
+                klips.toKlips(),
+                historyKlips.toKlips()
+            )
+        }.collect { (klips, historyKlips) ->
+            val (pinnedKlips, regularKlips) = klips.partition { it.isPinned }
+            updateState {
+                copy(
+                    pinnedKlips = pinnedKlips,
+                    klips = regularKlips,
+                    historyKlips = historyKlips
+                )
             }
-        )
+        }
     }
 
     override fun sendOutput(output: Output) {
@@ -73,6 +76,9 @@ sealed interface MainAction {
     data class HandleDelete(val klip: Klip): MainAction
     data class HandleCopy(val klip: Klippable): MainAction
     data class HandlePin(val klip: Klip): MainAction
+    data class HandleEdit(val klip: Klip): MainAction
+    data object HandleDeleteHistory : MainAction
+
 }
 
 sealed interface MainOutput : Output {

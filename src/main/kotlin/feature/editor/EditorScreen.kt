@@ -95,7 +95,7 @@ private fun EditorContent(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                Text("Create")
+                Text("Save")
             }
         }
     }
