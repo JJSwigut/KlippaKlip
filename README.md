@@ -3,8 +3,9 @@
 A desktop clipboard app built with Compose for Desktop:
 * For storing and managing snippets
 * For pinning frequently used snippets
-* TODO: Keeping a running history of recently copied items
-* TODO: Available from the menu bar
+* Listens for hotkeys to open and close
+* Can delete history
+* TODO: Create settings page
 * TODO: Search bar to quickly find snippets by title or content
 * TODO: Create package installers
 
