@@ -3,14 +3,17 @@ sqlDelight = "2.0.0"
 jNativeHook = "2.2.1"
 kotlin = "1.9.22"
 compose = "1.6.0"
+json = "1.6.3"
 
 [libraries]
 sqlDelight-driver = { group = "app.cash.sqldelight", name = "sqlite-driver", version.ref = "sqlDelight" }
 sqlDelight-coroutines = { group = "app.cash.sqldelight", name = "coroutines-extensions", version.ref = "sqlDelight" }
 jNativeHook = { group = "com.github.kwhat", name = "jnativehook", version.ref = "jNativeHook" }
+kotlinJson = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "json" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 sqlDelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
 

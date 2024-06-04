@@ -9,7 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-abstract class DesktopViewModel<T>(initialState: T) {
+abstract class DesktopViewModel<T>(
+    initialState: T,
+    private val output: (Output) -> Unit = {},
+) {
     private val viewModelJob = Job()
     protected val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
     private val _state = MutableStateFlow(initialState)
@@ -20,7 +23,9 @@ abstract class DesktopViewModel<T>(initialState: T) {
         _state.emit(newState)
     }
 
-    abstract fun sendOutput(output: Output)
+    protected fun sendOutput(output: Output) {
+        output(output)
+    }
 
     fun onDestroy() {
         viewModelScope.cancel()

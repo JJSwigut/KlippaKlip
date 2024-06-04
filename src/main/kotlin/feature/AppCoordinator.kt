@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import data.models.Klip
 import feature.editor.EditorOutput
 import feature.editor.EditorScreen
 import feature.editor.EditorViewModel
@@ -13,22 +14,26 @@ import feature.editor.EditorViewState
 import feature.mainscreen.MainOutput
 import feature.mainscreen.MainScreen
 import feature.mainscreen.MainViewModel
+import feature.settings.SettingsOutput
+import feature.settings.SettingsScreen
+import feature.settings.SettingsViewModel
 import feature.tray.MenuOutput
 import feature.tray.MenuOutput.Exit
 import feature.tray.MenuOutput.ShowCreate
 import feature.tray.MenuOutput.ShowKlips
 import feature.tray.MenuOutput.ShowSettings
-import java.awt.GraphicsEnvironment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import repository.KlipRepoImpl
+import repository.klips.KlipRepo
+import repository.settings.Prefs
 import utils.KeyListenerOutput
 import utils.KlipListenerOutput
 
 class AppCoordinator(
     val onExit: () -> Unit,
-    val repo: KlipRepoImpl,
+    val repo: KlipRepo,
+    val prefs: Prefs,
     val clipboardManager: ClipboardManager
 ) {
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -43,12 +48,19 @@ class AppCoordinator(
             is MainOutput -> handleMainOutput(output)
             is KlipListenerOutput -> handleKlipListenerOutput(output)
             is KeyListenerOutput -> handleKeyListenerOutput(output)
+            is SettingsOutput -> handleSettingsOutput(output)
         }
     }
 
     private fun handleKeyListenerOutput(output: KeyListenerOutput) {
         when (output) {
             is KeyListenerOutput.ShowKlips -> showKlips = output.shouldShow
+        }
+    }
+
+    private fun handleSettingsOutput(output: SettingsOutput) {
+        when(output) {
+            is SettingsOutput.Finished -> currentWindow = null
         }
     }
 
@@ -66,41 +78,45 @@ class AppCoordinator(
 
     private fun handleMainOutput(output: MainOutput) {
         when (output) {
-            is MainOutput.CreateKlip -> {
-                val viewModel = EditorViewModel(
-                    ioDispatcher = Dispatchers.IO,
-                    repo = repo,
-                    coordinator = this,
-                    initialState = EditorViewState()
-                )
-                currentWindow = { EditorScreen(viewModel) }
-            }
-            is MainOutput.EditKlip -> {
-                val viewModel = EditorViewModel(
-                    ioDispatcher = Dispatchers.IO,
-                    repo = repo,
-                    coordinator = this,
-                    initialState = EditorViewState(
-                        windowTitle = "Edit Klip",
-                        klip = output.klip
-                    )
-                )
-                currentWindow = { EditorScreen(viewModel) }
-            }
+            is MainOutput.CreateKlip -> showEditorScreen()
+            is MainOutput.EditKlip -> showEditorScreen(output.klip)
             is MainOutput.CopyKlip -> clipboardManager.setText(output.klip.klippedText)
         }
+    }
+
+    private fun showEditorScreen(klip: Klip? = null) {
+        val initialState = klip?.let {
+            EditorViewState(
+                windowTitle = "Edit Klip",
+                klip = it
+            )
+        } ?: EditorViewState()
+
+        val viewModel = EditorViewModel(
+            ioDispatcher = Dispatchers.IO,
+            repo = repo,
+            output = ::handleOutput,
+            initialState = initialState
+        )
+
+        currentWindow = { EditorScreen(viewModel) }
+    }
+
+    private fun showSettingsScreen() {
+        val viewModel = SettingsViewModel(
+            prefs = prefs,
+            output = ::handleOutput
+        )
+
+        currentWindow = { SettingsScreen(viewModel) }
     }
 
     private fun handleMenuOutput(output: MenuOutput) {
         when (output) {
             Exit -> onExit()
-            ShowCreate -> {
-                //todo
-            }
-            ShowKlips -> showKlips = true
-            ShowSettings -> {
-                //todo
-            }
+            ShowCreate -> showEditorScreen()
+            ShowKlips -> showKlips = !showKlips
+            ShowSettings -> showSettingsScreen()
         }
     }
 
@@ -122,6 +138,7 @@ class AppCoordinator(
                 viewModel = MainViewModel(
                     dispatcher = Dispatchers.IO,
                     repo = repo,
+                    prefs = prefs,
                     output = ::handleOutput
                 )
             )

@@ -1,4 +1,4 @@
-package repository
+package repository.klips
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList

@@ -1,26 +1,26 @@
 package feature.mainscreen
 
 import base.DesktopViewModel
-import com.sun.tools.javac.Main
 import data.models.HistoryKlip
 import data.models.Klip
+import data.models.KlipSettings
 import data.models.Klippable
+import data.models.SortOrder
 import data.models.toKlips
-import feature.AppCoordinator
 import feature.Output
 import feature.mainscreen.MainAction.*
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.combineTransform
 import kotlinx.coroutines.launch
-import repository.KlipRepo
-import repository.KlipRepoImpl
+import repository.klips.KlipRepo
+import repository.settings.Prefs
 
 class MainViewModel(
     private val dispatcher: CoroutineDispatcher,
     private val repo: KlipRepo,
-    private val output: (Output) -> Unit,
-) : DesktopViewModel<MainViewState>(MainViewState()) {
+    private val prefs: Prefs,
+    output: (Output) -> Unit,
+) : DesktopViewModel<MainViewState>(MainViewState(), output) {
 
     init {
         handleAction(Initialize)
@@ -48,7 +48,7 @@ class MainViewModel(
                 historyKlips.toKlips()
             )
         }.collect { (klips, historyKlips) ->
-            val (pinnedKlips, regularKlips) = klips.partition { it.isPinned }
+            val (pinnedKlips, regularKlips) = klips.sortKlipsBasedOnPrefs()
             updateState {
                 copy(
                     pinnedKlips = pinnedKlips,
@@ -59,10 +59,29 @@ class MainViewModel(
         }
     }
 
-    override fun sendOutput(output: Output) {
-        output(output)
+    private fun List<Klip>.sortKlipsBasedOnPrefs(): SortedKlips {
+        val (pinnedKlips, regularKlips) = partition { it.isPinned }
+
+        fun List<Klip>.sortKlips(order: SortOrder): List<Klip> {
+            return when (order) {
+                SortOrder.Oldest -> sortedBy { it.id }
+                SortOrder.Recent -> sortedByDescending { it.id }
+                SortOrder.Alphabetical -> sortedBy { it.title ?: it.itemText }
+            }
+        }
+        with(prefs.settings.value) {
+            return SortedKlips(
+                pinnedKlips.sortKlips(pinnedSortOrder),
+                regularKlips.sortKlips(klipSortOrder)
+            )
+        }
     }
 }
+
+private data class SortedKlips(
+    val pinnedKlips: List<Klip>,
+    val klips: List<Klip>
+)
 
 data class MainViewState(
     val historyKlips: List<HistoryKlip> = listOf(),

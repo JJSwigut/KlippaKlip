@@ -12,3 +12,11 @@ val sonosFamily = FontFamily(
         style = FontStyle.Normal
     )
 )
+
+val jetbrainsFamily = FontFamily(
+    Font(
+        resource = "jetbrains_mono_regular.ttf",
+        weight = FontWeight.Normal,
+        style = FontStyle.Normal
+    )
+)

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.compose)
     alias(libs.plugins.sqlDelight)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 group = "com.jjswigut"
@@ -21,6 +22,7 @@ dependencies {
     implementation(libs.sqlDelight.driver)
     implementation(libs.sqlDelight.coroutines)
     implementation(libs.jNativeHook)
+    implementation(libs.kotlinJson)
 }
 
 compose.desktop {

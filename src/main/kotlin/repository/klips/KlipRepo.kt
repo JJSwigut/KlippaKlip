@@ -1,4 +1,4 @@
-package repository
+package repository.klips
 
 import com.jjswigut.klippaklip.database.HistoryEntity
 import com.jjswigut.klippaklip.database.KlipEntity

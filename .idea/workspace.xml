@@ -5,21 +5,28 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa39d4d5-a694-4f76-bddc-52f0c9800e7e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/data/models/KlipSettings.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/feature/settings/SettingsScreen.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/feature/settings/SettingsViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/repository/settings/Prefs.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/utils/KeyMapper.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/jetbrains_mono_regular.ttf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/klippaklip.db" beforeDir="false" afterPath="$PROJECT_DIR$/klippaklip.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/base/DesktopViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/base/DesktopViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/AppCoordinator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/AppCoordinator.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/editor/EditorViewModel.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen/MainViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepo.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepoImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepoImpl.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/CreateDialog.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utils/Modifiers.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utils/Modifiers.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utils/Strings.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utils/Strings.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database/History.sq" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database/History.sq" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/repository/klips/KlipRepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/repository/KlipRepoImpl.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/repository/klips/KlipRepoImpl.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/theme/Colors.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/theme/Colors.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/theme/Fonts.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/theme/Fonts.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/utils/KeyListener.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/utils/KeyListener.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,9 +104,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Kotlin File" />
-        <option value="Kotlin Data Class" />
         <option value="Kotlin Object" />
         <option value="Kotlin Interface" />
+        <option value="Kotlin Data Class" />
         <option value="Kotlin Class" />
       </list>
     </option>
@@ -139,10 +146,11 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "hoverStuff",
+    "git-widget-placeholder": "settings",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "/Users/swig/StudioProjects/KlippaKlip",
     "node.js.detected.package.eslint": "true",
@@ -162,13 +170,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen" />
       <recent name="$PROJECT_DIR$/src/main/resources" />
+      <recent name="$PROJECT_DIR$/src/main/kotlin/feature/mainscreen" />
       <recent name="$PROJECT_DIR$/src/main/resources/drawable" />
       <recent name="$PROJECT_DIR$/src/main/kotlin/ui" />
       <recent name="$PROJECT_DIR$/src/main/sqldelight/com/jjswigut/klippaklip/database" />
     </key>
     <key name="MoveKotlinTopLevelDeclarationsDialog.RECENTS_KEY">
+      <recent name="repository.klips" />
       <recent name="utils" />
     </key>
   </component>
@@ -284,7 +293,15 @@
       <option name="project" value="LOCAL" />
       <updated>1716855513515</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="hover actions, edit">
+      <option name="closed" value="true" />
+      <created>1717117037235</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1717117037235</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -295,7 +312,19 @@
     <MESSAGE value="readme" />
     <MESSAGE value="wip" />
     <MESSAGE value="version catalogs" />
-    <option name="LAST_COMMIT_MESSAGE" value="version catalogs" />
+    <MESSAGE value="hover actions, edit" />
+    <option name="LAST_COMMIT_MESSAGE" value="hover actions, edit" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/repository/settings/Prefs.kt</url>
+          <line>17</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

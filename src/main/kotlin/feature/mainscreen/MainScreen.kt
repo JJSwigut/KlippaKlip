@@ -5,9 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.background
@@ -37,6 +35,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
@@ -61,7 +60,6 @@ import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
-import androidx.compose.ui.Alignment.Companion.TopCenter
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -87,20 +85,23 @@ fun MainScreen(
     viewModel: MainViewModel,
 ) {
     val viewState by viewModel.state.collectAsState()
+    val state = rememberWindowState(
+        placement = WindowPlacement.Floating,
+        position = WindowPosition.Aligned(Alignment.TopEnd)
+    )
     Window(
         onCloseRequest = { },
-        state = rememberWindowState(
-            placement = WindowPlacement.Floating,
-            position = WindowPosition.Aligned(Alignment.TopEnd)
-        ),
+        state = state,
         undecorated = true,
         transparent = true,
         alwaysOnTop = true,
     ) {
-        MainContent(
-            viewState,
-            viewModel::handleAction
-        )
+        WindowDraggableArea {
+            MainContent(
+                viewState,
+                viewModel::handleAction
+            )
+        }
     }
 }
 
@@ -224,7 +225,6 @@ private fun HistoryColumn(
         } else {
             LazyColumn(
                 state = listState,
-                modifier = Modifier.padding(horizontal = 8.dp),
                 verticalArrangement = Arrangement.Center,
                 reverseLayout = true
             ) {
@@ -240,7 +240,11 @@ private fun HistoryColumn(
                                 modifier = Modifier.background(
                                     color = MaterialTheme.colors.primary,
                                     shape = MaterialTheme.shapes.medium
-                                ).onHover().onDoubleClick { actionHandler(HandleCopy(klip)) },
+                                ).onHover(
+                                    onHovered = {
+                                        //todo add delete single history item
+                                    }
+                                ).onDoubleClick { actionHandler(HandleCopy(klip)) },
                                 contentAlignment = Center
                             ) {
                                 Text(
@@ -289,7 +293,6 @@ private fun PinnedKlipRow(
     LazyRow(
         modifier = modifier,
         horizontalArrangement = spacedBy(4.dp),
-        contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
         items(pinnedKlips) { klip ->
             KlipCard(
@@ -307,6 +310,7 @@ private fun KlipCard(
     actionHandler: (MainAction) -> Unit,
 ) {
     var showActions by remember { mutableStateOf(false) }
+    var shouldShowToolTip by remember { mutableStateOf(true) }
 
     Box(
         modifier = Modifier
@@ -315,6 +319,7 @@ private fun KlipCard(
             }
             .onHover {
                 showActions = it
+                shouldShowToolTip = it
             }
             .background(MaterialTheme.colors.primary)
             .size(width = 200.dp, height = 150.dp)
@@ -322,7 +327,9 @@ private fun KlipCard(
         TooltipArea(
             delayMillis = 750,
             tooltip = {
-                KlipTip(item.itemText)
+                if(shouldShowToolTip) {
+                    KlipTip(item.itemText)
+                }
             }
         ) {
             Column(

@@ -2,18 +2,18 @@ package feature.editor
 
 import base.DesktopViewModel
 import data.models.Klip
-import feature.AppCoordinator
 import feature.Output
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
-import repository.KlipRepoImpl
+import repository.klips.KlipRepo
+import repository.klips.KlipRepoImpl
 
 class EditorViewModel(
     private val ioDispatcher: CoroutineDispatcher,
-    private val repo: KlipRepoImpl,
-    private val coordinator: AppCoordinator,
-    private val initialState: EditorViewState
-): DesktopViewModel<EditorViewState>(initialState){
+    private val repo: KlipRepo,
+    private val initialState: EditorViewState,
+    output: (Output) -> Unit,
+): DesktopViewModel<EditorViewState>(initialState, output){
 
     fun handleAction(action: EditorAction){
         viewModelScope.launch(ioDispatcher) {
@@ -26,10 +26,6 @@ class EditorViewModel(
 
     private suspend fun handleSave(action: EditorAction.HandleSave) {
         // todo
-    }
-
-    override fun sendOutput(output: Output) {
-        coordinator.handleOutput(output)
     }
 }
 
