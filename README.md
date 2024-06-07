@@ -1,6 +1,7 @@
-# KlippaKlip
-
-![KlippaKlip Logo](/KlippaKlipIcon.png)
+<div align="center">
+  <img src="/KlippaKlipIcon.png" width="512">
+  <h1>KlippaKlip</h1>
+</div>
 
 KlippaKlip is a powerful clipboard manager built with Compose for Desktop, designed to enhance your coding flow by providing quick access to frequently used snippets. Whether you're pasting commands in the terminal or prompts for AI tools, KlippaKlip integrates seamlessly into your workflow.
 
