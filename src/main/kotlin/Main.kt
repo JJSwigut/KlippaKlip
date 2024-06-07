@@ -48,12 +48,14 @@ fun main() = application {
             closeKeys = listenerCloseKeys,
             onOutput = coordinator::handleOutput
         )
-    }
 
-    KlipListener(
-        clipboardManager = coordinator.clipboardManager,
-        onOutput = coordinator::handleOutput
-    )
+        if(shouldTrackHistory) {
+            KlipListener(
+                clipboardManager = coordinator.clipboardManager,
+                onOutput = coordinator::handleOutput
+            )
+        }
+    }
 
     KlipTray(coordinator)
 

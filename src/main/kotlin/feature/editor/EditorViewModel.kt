@@ -6,7 +6,6 @@ import feature.Output
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import repository.klips.KlipRepo
-import repository.klips.KlipRepoImpl
 
 class EditorViewModel(
     private val ioDispatcher: CoroutineDispatcher,
@@ -25,7 +24,23 @@ class EditorViewModel(
     }
 
     private suspend fun handleSave(action: EditorAction.HandleSave) {
-        // todo
+        initialState.klip?.let { klip ->
+            repo.upsertKlip(
+                id = klip.id,
+                title = action.title,
+                itemText = action.klip,
+                isPinned = klip.isPinned,
+                timeCreated = klip.timeCreated)
+        } ?: run {
+            repo.upsertKlip(
+                id = null,
+                title = action.title,
+                itemText = action.klip,
+                isPinned = false,
+                timeCreated = null
+            )
+        }
+        sendOutput(EditorOutput.Finished)
     }
 }
 

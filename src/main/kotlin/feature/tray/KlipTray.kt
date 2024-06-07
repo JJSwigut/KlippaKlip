@@ -9,6 +9,7 @@ import androidx.compose.ui.window.rememberTrayState
 import feature.AppCoordinator
 import feature.Output
 import feature.tray.MenuOutput.*
+import java.awt.Toolkit
 
 @Composable
 fun ApplicationScope.KlipTray(coordinator: AppCoordinator) {

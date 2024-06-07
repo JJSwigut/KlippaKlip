@@ -63,6 +63,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -311,6 +312,7 @@ private fun KlipCard(
 ) {
     var showActions by remember { mutableStateOf(false) }
     var shouldShowToolTip by remember { mutableStateOf(true) }
+    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
     Box(
         modifier = Modifier
@@ -319,7 +321,7 @@ private fun KlipCard(
             }
             .onHover {
                 showActions = it
-                shouldShowToolTip = it
+                shouldShowToolTip = it && (textLayoutResult?.hasVisualOverflow == true)
             }
             .background(MaterialTheme.colors.primary)
             .size(width = 200.dp, height = 150.dp)
@@ -327,7 +329,7 @@ private fun KlipCard(
         TooltipArea(
             delayMillis = 750,
             tooltip = {
-                if(shouldShowToolTip) {
+                if (shouldShowToolTip) {
                     KlipTip(item.itemText)
                 }
             }
@@ -352,7 +354,10 @@ private fun KlipCard(
                     color = MaterialTheme.colors.onPrimary,
                     text = item.itemText,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
+                    onTextLayout = { layoutResult ->
+                        textLayoutResult = layoutResult
+                    }
                 )
             }
         }
@@ -363,7 +368,9 @@ private fun KlipCard(
             exit = slideOutHorizontally(targetOffsetX = { it / 2 }) + fadeOut()
         ) {
             CardActions(
-                modifier = Modifier.fillMaxHeight().width(20.dp),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(20.dp),
                 pinIcon = if (item.isPinned) Icons.Outlined.PushPin else Icons.Filled.PushPin,
                 onCopy = { actionHandler(HandleCopy(item)) },
                 onPin = { actionHandler(HandlePin(item)) },

@@ -3,23 +3,11 @@ package utils
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.x
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 import com.github.kwhat.jnativehook.GlobalScreen
 import com.github.kwhat.jnativehook.keyboard.NativeKeyEvent
 import com.github.kwhat.jnativehook.keyboard.NativeKeyListener
-import data.models.KlipSettings
-import data.models.listenerCloseKeys
-import data.models.listenerOpenKeys
 import feature.Output
-import java.awt.KeyEventDispatcher
-import java.awt.KeyboardFocusManager
-import java.awt.event.KeyEvent
-import repository.settings.Prefs.settings
-
 
 @Composable
 fun GlobalKeyListener(
@@ -42,6 +30,7 @@ fun GlobalKeyListener(
 }
 
 sealed interface KeyListenerOutput: Output {
+    data object ToggleKlips : KeyListenerOutput
     data class ShowKlips(val shouldShow: Boolean) : KeyListenerOutput
 }
 
@@ -52,9 +41,14 @@ class KeyListenerManager(
     private var closeKeys = emptyList<Int>()
     private val pressedKeys = mutableSetOf<Int>()
 
+
     private val keyListener = object : NativeKeyListener {
         override fun nativeKeyPressed(e: NativeKeyEvent?) {
             e?.keyCode?.let { keyCode ->
+                if (keyCode == NativeKeyEvent.VC_ALT) {
+                    handleDoubleKeyPress()
+                }
+
                 if (pressedKeys.add(keyCode)) {
                     if (pressedKeys.containsAll(openKeys)) {
                         onOutput(KeyListenerOutput.ShowKlips(true))
@@ -94,5 +88,22 @@ class KeyListenerManager(
         } catch (ex: Exception) {
             println("Error unregistering native hook: ${ex.message}")
         }
+    }
+
+    private var lastDoubleKeyClickTime: Long = 0
+    private var doubleKeyPressCount = 0
+    private val doubleClickThreshold = 500L
+    private fun handleDoubleKeyPress() {
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - lastDoubleKeyClickTime <= doubleClickThreshold) {
+            doubleKeyPressCount++
+            if (doubleKeyPressCount == 2) {
+                onOutput(KeyListenerOutput.ToggleKlips)
+                doubleKeyPressCount = 0
+            }
+        } else {
+            doubleKeyPressCount = 1
+        }
+        lastDoubleKeyClickTime = currentTime
     }
 }

@@ -1,5 +1,7 @@
 package feature
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +57,7 @@ class AppCoordinator(
     private fun handleKeyListenerOutput(output: KeyListenerOutput) {
         when (output) {
             is KeyListenerOutput.ShowKlips -> showKlips = output.shouldShow
+            is KeyListenerOutput.ToggleKlips -> showKlips = !showKlips
         }
     }
 

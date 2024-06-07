@@ -2,12 +2,9 @@ CREATE TABLE IF NOT EXISTS  KlipEntity (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     itemText TEXT NOT NULL,
-    isPinned INTEGER NOT NULL DEFAULT 0 -- 0 for false, 1 for true
+    isPinned INTEGER NOT NULL DEFAULT 0, -- 0 for false, 1 for true
+    timestamp INTEGER NOT NULL
 );
-
-insertKlipEntity:
-INSERT INTO KlipEntity(title, itemText, isPinned)
-VALUES (?, ?, ?);
 
 selectAllKlipEntities:
 SELECT * FROM KlipEntity;
@@ -16,7 +13,6 @@ deleteKlipEntity:
 DELETE FROM KlipEntity
 WHERE id = ?;
 
-updateKlipEntityIsPinned:
-UPDATE KlipEntity
-SET isPinned = ?
-WHERE id = ?;
+upsertKlipEntity:
+INSERT OR REPLACE INTO KlipEntity(id, title, itemText, isPinned, timestamp)
+VALUES (?, ?, ?, ?,?);

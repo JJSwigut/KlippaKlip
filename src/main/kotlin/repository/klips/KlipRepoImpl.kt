@@ -14,12 +14,20 @@ class KlipRepoImpl(private val db: Database): KlipRepo {
     override val historyKlips: Flow<List<HistoryEntity>> = db.historyQueries.selectAllHistory().asFlow().mapToList(Dispatchers.IO)
     override val klips: Flow<List<KlipEntity>> = db.klippedQueries.selectAllKlipEntities().asFlow().mapToList(Dispatchers.IO)
 
-    override suspend fun addKlip(title: String?, klip: String, isPinned: Boolean) {
+    override suspend fun upsertKlip(
+        id: Long?,
+        title: String?,
+        itemText: String,
+        isPinned: Boolean,
+        timeCreated: Long?
+    ) {
         runCatching {
-            db.klippedQueries.insertKlipEntity(
+            db.klippedQueries.upsertKlipEntity(
+                id = id,
                 title = title,
-                itemText = klip,
-                isPinned = if(isPinned) 1 else 0
+                itemText = itemText,
+                isPinned = if(isPinned) 1 else 0,
+                timestamp = timeCreated ?: System.currentTimeMillis()
             )
         }
     }
@@ -27,15 +35,6 @@ class KlipRepoImpl(private val db: Database): KlipRepo {
     override suspend fun deleteKlip(klip: Klip) {
         runCatching {
             db.klippedQueries.deleteKlipEntity(klip.id)
-        }
-    }
-
-    override suspend fun pinKlip(klip: Klip) {
-        runCatching {
-            db.klippedQueries.updateKlipEntityIsPinned(
-                id = klip.id,
-                isPinned = if (klip.isPinned) 0 else 1
-            )
         }
     }
 

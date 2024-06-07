@@ -273,10 +273,10 @@ fun HotKeyField(currentHotkeys: List<Int>, onHotkeyChange: (List<Int>) -> Unit) 
         singleLine = true,
         colors = TextFieldDefaults.textFieldColors(
             textColor = MaterialTheme.colors.onPrimary,
-            backgroundColor = Color.Transparent,
+            backgroundColor = MaterialTheme.colors.secondary,
             focusedIndicatorColor = MaterialTheme.colors.onPrimary,
             unfocusedIndicatorColor = MaterialTheme.colors.onPrimary,
-            cursorColor = MaterialTheme.colors.onPrimary
+            cursorColor = MaterialTheme.colors.onSecondary
         ),
         trailingIcon = {
             if (hotKeys.isNotEmpty()) {

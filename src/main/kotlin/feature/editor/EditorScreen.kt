@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,6 +52,15 @@ fun EditorScreen(
 }
 
 @Composable
+private fun textFieldColors()  = TextFieldDefaults.outlinedTextFieldColors(
+    focusedBorderColor = MaterialTheme.colors.onPrimary,
+    backgroundColor = MaterialTheme.colors.secondary,
+    unfocusedBorderColor = MaterialTheme.colors.primaryVariant,
+    focusedLabelColor = MaterialTheme.colors.onPrimary,
+    placeholderColor = MaterialTheme.colors.onPrimary
+)
+
+@Composable
 private fun EditorContent(
     viewState: EditorViewState,
     actionHandler: (EditorAction) -> Unit,
@@ -62,7 +74,8 @@ private fun EditorContent(
                 value = titleTextValue,
                 onValueChange = { titleTextValue = it },
                 label = { Text("Title") },
-                modifier = Modifier.fillMaxWidth().weight(1f)
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                colors = textFieldColors()
             )
 
             Spacer(Modifier.height(8.dp))
@@ -74,6 +87,7 @@ private fun EditorContent(
                 },
                 label = { Text("Add your klip here") },
                 isError = klipTextValue.text.isBlank(),
+                colors = textFieldColors(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp)
@@ -83,8 +97,10 @@ private fun EditorContent(
             Spacer(Modifier.height(16.dp))
 
             Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
                 enabled = klipTextValue.text.isNotBlank(),
                 onClick = {
+                    val updatedKlip =
                     actionHandler(
                         EditorAction.HandleSave(
                             titleTextValue.text.takeIf { it.isNotBlank() },

@@ -8,6 +8,7 @@ data class Klip(
     val title: String? = null,
     val itemText: String,
     val isPinned: Boolean,
+    val timeCreated: Long,
 ): Klippable {
     override val klippedText: AnnotatedString
         get() = AnnotatedString(itemText)
@@ -18,7 +19,8 @@ private fun KlipEntity.toKlip(): Klip {
         id = id,
         title = title,
         itemText = itemText,
-        isPinned = isPinned == 1L
+        isPinned = isPinned == 1L,
+        timeCreated = timestamp
     )
 }
 

@@ -33,12 +33,22 @@ class MainViewModel(
                     is HandleCopy -> sendOutput(MainOutput.CopyKlip(action.klip))
                     is HandleCreateClicked -> sendOutput(MainOutput.CreateKlip)
                     is HandleDelete -> repo.deleteKlip(action.klip)
-                    is HandlePin -> repo.pinKlip(action.klip)
+                    is HandlePin -> handlePin(action.klip)
                     is HandleDeleteHistory -> repo.deleteAllHistory()
                     is HandleEdit -> sendOutput(MainOutput.EditKlip(action.klip))
                 }
             }
         }
+
+    private suspend fun handlePin(klip: Klip) {
+        repo.upsertKlip(
+            klip.id,
+            klip.title,
+            klip.itemText,
+            !klip.isPinned,
+            klip.timeCreated
+        )
+    }
 
     private suspend fun intialize() {
         combine(repo.klips,repo.historyKlips){
@@ -64,8 +74,8 @@ class MainViewModel(
 
         fun List<Klip>.sortKlips(order: SortOrder): List<Klip> {
             return when (order) {
-                SortOrder.Oldest -> sortedBy { it.id }
-                SortOrder.Recent -> sortedByDescending { it.id }
+                SortOrder.Oldest -> sortedBy { it.timeCreated }
+                SortOrder.Recent -> sortedByDescending { it.timeCreated }
                 SortOrder.Alphabetical -> sortedBy { it.title ?: it.itemText }
             }
         }
