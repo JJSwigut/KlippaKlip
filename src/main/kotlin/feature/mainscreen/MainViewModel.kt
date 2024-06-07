@@ -10,6 +10,9 @@ import data.models.toKlips
 import feature.Output
 import feature.mainscreen.MainAction.*
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import repository.klips.KlipRepo
@@ -26,19 +29,32 @@ class MainViewModel(
         handleAction(Initialize)
     }
 
-        fun handleAction(action: MainAction) {
-            viewModelScope.launch(dispatcher){
-                when(action){
-                    is Initialize -> intialize()
-                    is HandleCopy -> sendOutput(MainOutput.CopyKlip(action.klip))
-                    is HandleCreateClicked -> sendOutput(MainOutput.CreateKlip)
-                    is HandleDelete -> repo.deleteKlip(action.klip)
-                    is HandlePin -> handlePin(action.klip)
-                    is HandleDeleteHistory -> repo.deleteAllHistory()
-                    is HandleEdit -> sendOutput(MainOutput.EditKlip(action.klip))
-                }
+    fun handleAction(action: MainAction) {
+        viewModelScope.launch(dispatcher) {
+            when (action) {
+                is Initialize -> intialize()
+                is HandleCopy -> handleCopy(action.klip)
+                is HandleCreateClicked -> sendOutput(MainOutput.CreateKlip)
+                is HandleDelete -> repo.deleteKlip(action.klip)
+                is HandlePin -> handlePin(action.klip)
+                is HandleDeleteHistory -> repo.deleteAllHistory()
+                is HandleEdit -> sendOutput(MainOutput.EditKlip(action.klip))
             }
         }
+    }
+
+    private fun handleCopy(klip: Klippable) {
+        sendOutput(MainOutput.CopyKlip(klip))
+        viewModelScope.launch(dispatcher) {
+            updateState {
+                copy(showCopiedMessage = true)
+            }
+            delay(2000)
+            updateState {
+                copy(showCopiedMessage = false)
+            }
+        }
+    }
 
     private suspend fun handlePin(klip: Klip) {
         repo.upsertKlip(
@@ -97,6 +113,7 @@ data class MainViewState(
     val historyKlips: List<HistoryKlip> = listOf(),
     val pinnedKlips: List<Klip> = listOf(),
     val klips: List<Klip> = listOf(),
+    val showCopiedMessage: Boolean = false,
 )
 
 sealed interface MainAction {

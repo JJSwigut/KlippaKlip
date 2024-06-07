@@ -54,6 +54,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -78,6 +79,10 @@ import feature.mainscreen.MainAction.HandleCopy
 import feature.mainscreen.MainAction.HandleCreateClicked
 import feature.mainscreen.MainAction.HandleDelete
 import feature.mainscreen.MainAction.HandlePin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import ui.components.QuickMessage
 import utils.onDoubleClick
 import utils.onHover
 
@@ -90,6 +95,7 @@ fun MainScreen(
         placement = WindowPlacement.Floating,
         position = WindowPosition.Aligned(Alignment.TopEnd)
     )
+
     Window(
         onCloseRequest = { },
         state = state,
@@ -98,10 +104,10 @@ fun MainScreen(
         alwaysOnTop = true,
     ) {
         WindowDraggableArea {
-            MainContent(
-                viewState,
-                viewModel::handleAction
-            )
+                MainContent(
+                    viewState,
+                    viewModel::handleAction
+                )
         }
     }
 }
@@ -164,6 +170,11 @@ private fun MainContent(
                     Text(text = Strings.createKlip)
                 }
 
+                QuickMessage(
+                    message = "Copied!",
+                    show = viewState.showCopiedMessage,
+                )
+
                 Button(
                     onClick = { actionHandler(MainAction.HandleDeleteHistory) }
                 ) {
@@ -173,6 +184,9 @@ private fun MainContent(
         }
     }
 }
+
+
+
 
 @Composable
 private fun KlipColumn(
