@@ -2,8 +2,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.application
@@ -14,7 +12,6 @@ import feature.AppCoordinator
 import feature.tray.KlipTray
 import repository.klips.KlipRepoImpl
 import repository.settings.Prefs
-import repository.settings.Prefs.settings
 import ui.theme.colorScheme
 import ui.theme.jetbrainsFamily
 import utils.GlobalKeyListener
