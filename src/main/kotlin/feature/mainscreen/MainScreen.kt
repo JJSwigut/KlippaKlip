@@ -54,7 +54,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Center
@@ -79,9 +78,6 @@ import feature.mainscreen.MainAction.HandleCopy
 import feature.mainscreen.MainAction.HandleCreateClicked
 import feature.mainscreen.MainAction.HandleDelete
 import feature.mainscreen.MainAction.HandlePin
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import ui.components.QuickMessage
 import utils.onDoubleClick
 import utils.onHover
@@ -104,10 +100,10 @@ fun MainScreen(
         alwaysOnTop = true,
     ) {
         WindowDraggableArea {
-                MainContent(
-                    viewState,
-                    viewModel::handleAction
-                )
+            MainContent(
+                viewState,
+                viewModel::handleAction
+            )
         }
     }
 }
@@ -118,7 +114,7 @@ private fun MainContent(
     actionHandler: (MainAction) -> Unit,
 ) {
     Surface(
-        color = Color.Black.copy(alpha = .7f), shape = MaterialTheme.shapes.medium
+        color = Color.Black.copy(alpha = .7f), shape = MaterialTheme.shapes.large
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -151,12 +147,15 @@ private fun MainContent(
                         )
                     }
                 }
-                Spacer(Modifier.width(8.dp))
-                HistoryColumn(
-                    modifier = Modifier.weight(1f),
-                    historyKlips = viewState.historyKlips,
-                    actionHandler = actionHandler
-                )
+
+                if (viewState.historyKlips.isNotEmpty()) {
+                    Spacer(Modifier.width(8.dp))
+                    HistoryColumn(
+                        modifier = Modifier.weight(1f),
+                        historyKlips = viewState.historyKlips,
+                        actionHandler = actionHandler
+                    )
+                }
             }
             Spacer(Modifier.height(8.dp))
             Row(
@@ -184,8 +183,6 @@ private fun MainContent(
         }
     }
 }
-
-
 
 
 @Composable
@@ -337,7 +334,7 @@ private fun KlipCard(
                 showActions = it
                 shouldShowToolTip = it && (textLayoutResult?.hasVisualOverflow == true)
             }
-            .background(MaterialTheme.colors.primary)
+            .background(color = MaterialTheme.colors.primary, shape = MaterialTheme.shapes.medium)
             .size(width = 200.dp, height = 150.dp)
     ) {
         TooltipArea(
@@ -394,6 +391,7 @@ private fun KlipCard(
         }
     }
 }
+
 @Composable
 private fun CardActions(
     modifier: Modifier = Modifier,

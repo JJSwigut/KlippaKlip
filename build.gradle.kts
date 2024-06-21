@@ -30,6 +30,7 @@ compose.desktop {
         mainClass = "MainKt"
 
         nativeDistributions {
+            modules("java.sql", "java.naming")
             targetFormats(
                 TargetFormat.Dmg,
                 TargetFormat.Msi,
@@ -39,6 +40,16 @@ compose.desktop {
             )
             packageName = "KlippaKlip"
             packageVersion = "1.0.0"
+
+            macOS {
+                bundleID = "com.jjswigut.klippaklip"
+                iconFile.set(project.file("src/main/resources/klippaklip.icns"))
+
+                signing {
+                    sign.set(true)
+                    identity.set("Joshua Swigut")
+                }
+            }
         }
     }
 }
