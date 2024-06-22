@@ -9,6 +9,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -79,47 +80,49 @@ private fun EditorContent(
         )
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        OutlinedTextField(
-            value = titleTextValue,
-            onValueChange = { titleTextValue = it },
-            label = { Text("Title") },
-            modifier = Modifier.fillMaxWidth().weight(1f),
-            colors = textFieldColors()
-        )
+    Surface(color = MaterialTheme.colors.primary) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            OutlinedTextField(
+                value = titleTextValue,
+                onValueChange = { titleTextValue = it },
+                label = { Text("Title") },
+                modifier = Modifier.fillMaxWidth().weight(1f),
+                colors = textFieldColors()
+            )
 
-        Spacer(Modifier.height(8.dp))
+            Spacer(Modifier.height(8.dp))
 
-        OutlinedTextField(
-            value = klipTextValue,
-            onValueChange = {
-                klipTextValue = it
-            },
-            label = { Text("Add your klip here") },
-            isError = klipTextValue.text.isBlank(),
-            colors = textFieldColors(),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp)
-                .weight(2f)
-        )
+            OutlinedTextField(
+                value = klipTextValue,
+                onValueChange = {
+                    klipTextValue = it
+                },
+                label = { Text("Add your klip here") },
+                isError = klipTextValue.text.isBlank(),
+                colors = textFieldColors(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp)
+                    .weight(2f)
+            )
 
-        Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-        Button(
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-            enabled = klipTextValue.text.isNotBlank(),
-            onClick = {
-                actionHandler(
-                    EditorAction.HandleSave(
-                        titleTextValue.text.takeIf { it.isNotBlank() },
-                        klipTextValue.text
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+                enabled = klipTextValue.text.isNotBlank(),
+                onClick = {
+                    actionHandler(
+                        EditorAction.HandleSave(
+                            titleTextValue.text.takeIf { it.isNotBlank() },
+                            klipTextValue.text
+                        )
                     )
-                )
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Save")
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Save")
+            }
         }
     }
 }
