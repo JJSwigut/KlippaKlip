@@ -3,6 +3,7 @@ package repository.klips
 import com.jjswigut.klippaklip.database.HistoryEntity
 import com.jjswigut.klippaklip.database.KlipEntity
 import data.models.Klip
+import data.models.Klippable
 import kotlinx.coroutines.flow.Flow
 
 interface KlipRepo {
@@ -12,7 +13,7 @@ interface KlipRepo {
 
     suspend fun upsertKlip(id: Long?, title: String?, itemText: String, isPinned: Boolean, timeCreated: Long?)
 
-    suspend fun deleteKlip(klip: Klip)
+    suspend fun deleteKlip(klip: Klippable)
 
     suspend fun saveHistoryKlip(string: String)
 

@@ -3,16 +3,19 @@ package feature.mainscreen
 import base.DesktopViewModel
 import data.models.HistoryKlip
 import data.models.Klip
-import data.models.KlipSettings
 import data.models.Klippable
 import data.models.SortOrder
 import data.models.toKlips
 import feature.Output
-import feature.mainscreen.MainAction.*
+import feature.mainscreen.MainAction.HandleCopy
+import feature.mainscreen.MainAction.HandleCreateClicked
+import feature.mainscreen.MainAction.HandleDelete
+import feature.mainscreen.MainAction.HandleDeleteHistory
+import feature.mainscreen.MainAction.HandleEdit
+import feature.mainscreen.MainAction.HandlePin
+import feature.mainscreen.MainAction.Initialize
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import repository.klips.KlipRepo
@@ -119,7 +122,7 @@ data class MainViewState(
 sealed interface MainAction {
     data object Initialize: MainAction
     data object HandleCreateClicked: MainAction
-    data class HandleDelete(val klip: Klip): MainAction
+    data class HandleDelete(val klip: Klippable): MainAction
     data class HandleCopy(val klip: Klippable): MainAction
     data class HandlePin(val klip: Klip): MainAction
     data class HandleEdit(val klip: Klip): MainAction

@@ -1,6 +1,9 @@
 package repository.settings
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.window.WindowPosition
 import data.models.KlipSettings
 import java.util.prefs.Preferences
 import kotlinx.serialization.json.Json

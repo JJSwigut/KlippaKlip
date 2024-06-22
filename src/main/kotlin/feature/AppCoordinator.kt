@@ -1,7 +1,5 @@
 package feature
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -136,14 +134,15 @@ class AppCoordinator(
 
     @Composable
     fun KlipsContent() {
+        val viewModel = MainViewModel(
+            dispatcher = Dispatchers.IO,
+            repo = repo,
+            prefs = prefs,
+            output = ::handleOutput
+        )
         if (showKlips) {
             MainScreen(
-                viewModel = MainViewModel(
-                    dispatcher = Dispatchers.IO,
-                    repo = repo,
-                    prefs = prefs,
-                    output = ::handleOutput
-                )
+                viewModel = viewModel
             )
         }
     }

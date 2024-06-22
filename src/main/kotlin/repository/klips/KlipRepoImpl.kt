@@ -5,7 +5,9 @@ import app.cash.sqldelight.coroutines.mapToList
 import com.jjswigut.klippaklip.Database
 import com.jjswigut.klippaklip.database.HistoryEntity
 import com.jjswigut.klippaklip.database.KlipEntity
+import data.models.HistoryKlip
 import data.models.Klip
+import data.models.Klippable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
@@ -32,9 +34,12 @@ class KlipRepoImpl(private val db: Database): KlipRepo {
         }
     }
 
-    override suspend fun deleteKlip(klip: Klip) {
+    override suspend fun deleteKlip(klip: Klippable) {
         runCatching {
-            db.klippedQueries.deleteKlipEntity(klip.id)
+            when (klip) {
+                is HistoryKlip -> db.historyQueries.deleteHistoryEntity(klip.id)
+                is Klip -> db.klippedQueries.deleteKlipEntity(klip.id)
+            }
         }
     }
 

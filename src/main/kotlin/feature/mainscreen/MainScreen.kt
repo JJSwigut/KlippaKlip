@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
 package feature.mainscreen
 
 import Strings
@@ -20,6 +22,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -56,10 +59,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
+import androidx.compose.ui.Alignment.Companion.End
+import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -87,9 +91,10 @@ fun MainScreen(
     viewModel: MainViewModel,
 ) {
     val viewState by viewModel.state.collectAsState()
+
     val state = rememberWindowState(
         placement = WindowPlacement.Floating,
-        position = WindowPosition.Aligned(Alignment.TopEnd)
+        position = WindowPosition.Aligned(TopEnd)
     )
 
     Window(
@@ -117,6 +122,7 @@ private fun MainContent(
         color = Color.Black.copy(alpha = .7f), shape = MaterialTheme.shapes.large
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
+
             Row(
                 modifier = Modifier.weight(1f),
                 verticalAlignment = CenterVertically
@@ -184,7 +190,6 @@ private fun MainContent(
     }
 }
 
-
 @Composable
 private fun KlipColumn(
     modifier: Modifier = Modifier,
@@ -208,7 +213,6 @@ private fun KlipColumn(
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun HistoryColumn(
     modifier: Modifier = Modifier,
@@ -226,8 +230,7 @@ private fun HistoryColumn(
 
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = modifier
-            .fillMaxHeight()
+        modifier = modifier.fillMaxHeight()
     ) {
         if (historyKlips.isEmpty()) {
             EmptyState(
@@ -237,40 +240,14 @@ private fun HistoryColumn(
         } else {
             LazyColumn(
                 state = listState,
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = spacedBy(2.dp, CenterVertically),
                 reverseLayout = true
             ) {
                 items(historyKlips) { klip ->
-                    TooltipArea(
-                        delayMillis = 750,
-                        tooltip = {
-                            KlipTip(klip.text)
-                        }
-                    ) {
-                        Column {
-                            Box(
-                                modifier = Modifier.background(
-                                    color = MaterialTheme.colors.primary,
-                                    shape = MaterialTheme.shapes.medium
-                                ).onHover(
-                                    onHovered = {
-                                        //todo add delete single history item
-                                    }
-                                ).onDoubleClick { actionHandler(HandleCopy(klip)) },
-                                contentAlignment = Center
-                            ) {
-                                Text(
-                                    color = MaterialTheme.colors.onPrimary,
-                                    modifier = Modifier.fillMaxWidth().padding(2.dp),
-                                    text = klip.text,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.body2,
-                                )
-                            }
-                            Spacer(Modifier.height(2.dp))
-                        }
-                    }
+                    HistoryCard(
+                        klip = klip,
+                        actionHandler = actionHandler
+                    )
                 }
             }
         }
@@ -278,14 +255,85 @@ private fun HistoryColumn(
 }
 
 @Composable
-fun KlipTip(
+private fun HistoryCard(
+    modifier: Modifier = Modifier,
+    klip: HistoryKlip,
+    actionHandler: (MainAction) -> Unit
+) {
+    var showDeleteAction by remember { mutableStateOf(false) }
+    var showToolTip by remember { mutableStateOf(true) }
+
+    Box(
+        modifier = modifier.onDoubleClick {
+            actionHandler(HandleCopy(klip))
+        }.onHover(
+            onHovered = { hovered ->
+                showDeleteAction = hovered
+            }
+        ).background(
+            color = MaterialTheme.colors.primary,
+            shape = MaterialTheme.shapes.medium
+        )
+    ) {
+        TooltipArea(
+            delayMillis = 750,
+            tooltip = {
+                if (showToolTip) {
+                    KlipTip(klip.text)
+                }
+            }
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 2.dp, vertical = 2.dp),
+                    text = klip.text,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.body2,
+                )
+                Text(
+                    color = MaterialTheme.colors.onPrimary,
+                    modifier = Modifier.fillMaxWidth().align(End).padding(horizontal = 2.dp)
+                        .padding(bottom = 2.dp),
+                    text = klip.timeCopied,
+                    textAlign = TextAlign.End,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.caption,
+                )
+
+            }
+        }
+
+        AnimatedVisibility(
+            modifier = Modifier.align(TopEnd),
+            visible = showDeleteAction,
+            enter = slideInHorizontally(initialOffsetX = { it / 2 }) + fadeIn(),
+            exit = slideOutHorizontally(targetOffsetX = { it / 2 }) + fadeOut()
+        ) {
+            DeleteAction(
+                modifier = Modifier.fillMaxHeight().width(20.dp).onHover { hovered ->
+                    showToolTip = !hovered
+                },
+                onDelete = {
+                actionHandler(HandleDelete(klip))
+            })
+        }
+    }
+}
+
+@Composable
+private fun KlipTip(
     text: String,
 ) {
-    Box(
+    Column(
         modifier = Modifier.background(
             color = MaterialTheme.colors.secondary,
             shape = MaterialTheme.shapes.large
-        ).scrollable(rememberScrollState(), Vertical), contentAlignment = Alignment.Center
+        ).scrollable(rememberScrollState(), Vertical)
     ) {
         Text(
             style = MaterialTheme.typography.body2,
@@ -318,6 +366,7 @@ private fun PinnedKlipRow(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun KlipCard(
+    modifier: Modifier = Modifier,
     item: Klip,
     actionHandler: (MainAction) -> Unit,
 ) {
@@ -326,7 +375,7 @@ private fun KlipCard(
     var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .onDoubleClick {
                 actionHandler(HandleCopy(item))
             }
@@ -335,7 +384,7 @@ private fun KlipCard(
                 shouldShowToolTip = it && (textLayoutResult?.hasVisualOverflow == true)
             }
             .background(color = MaterialTheme.colors.primary, shape = MaterialTheme.shapes.medium)
-            .size(width = 200.dp, height = 150.dp)
+            .size(width = 175.dp, height = 125.dp)
     ) {
         TooltipArea(
             delayMillis = 750,
@@ -433,6 +482,27 @@ private fun CardActions(
         )
     }
 }
+
+@Composable
+private fun DeleteAction(
+    modifier: Modifier = Modifier,
+    onDelete: () -> Unit,
+) {
+    Box(
+        modifier = modifier.background(
+            color = Color.Black.copy(alpha = .8f),
+            shape = MaterialTheme.shapes.medium
+        ),
+    ) {
+        Icon(
+            modifier = Modifier.size(15.dp).padding(2.dp).clickable { onDelete() },
+            imageVector = Icons.Default.Delete,
+            contentDescription = null,
+            tint = MaterialTheme.colors.onPrimary
+        )
+    }
+}
+
 
 @Composable
 private fun EmptyState(

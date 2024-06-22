@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -52,7 +51,7 @@ fun EditorScreen(
 }
 
 @Composable
-private fun textFieldColors()  = TextFieldDefaults.outlinedTextFieldColors(
+private fun textFieldColors() = TextFieldDefaults.outlinedTextFieldColors(
     focusedBorderColor = MaterialTheme.colors.onPrimary,
     backgroundColor = MaterialTheme.colors.secondary,
     unfocusedBorderColor = MaterialTheme.colors.primaryVariant,
@@ -65,54 +64,62 @@ private fun EditorContent(
     viewState: EditorViewState,
     actionHandler: (EditorAction) -> Unit,
 ) {
-    var titleTextValue by remember(viewState.klip) { mutableStateOf(TextFieldValue(viewState.klip?.title ?: "")) }
-    var klipTextValue by remember(viewState.klip) { mutableStateOf(TextFieldValue(viewState.klip?.itemText ?: "")) }
-
-    Card {
-        Column(modifier = Modifier.padding(16.dp)) {
-            OutlinedTextField(
-                value = titleTextValue,
-                onValueChange = { titleTextValue = it },
-                label = { Text("Title") },
-                modifier = Modifier.fillMaxWidth().weight(1f),
-                colors = textFieldColors()
+    var titleTextValue by remember(viewState.klip) {
+        mutableStateOf(
+            TextFieldValue(
+                viewState.klip?.title ?: ""
             )
-
-            Spacer(Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = klipTextValue,
-                onValueChange = {
-                    klipTextValue = it
-                },
-                label = { Text("Add your klip here") },
-                isError = klipTextValue.text.isBlank(),
-                colors = textFieldColors(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .weight(2f)
+        )
+    }
+    var klipTextValue by remember(viewState.klip) {
+        mutableStateOf(
+            TextFieldValue(
+                viewState.klip?.itemText ?: ""
             )
+        )
+    }
 
-            Spacer(Modifier.height(16.dp))
+    Column(modifier = Modifier.padding(16.dp)) {
+        OutlinedTextField(
+            value = titleTextValue,
+            onValueChange = { titleTextValue = it },
+            label = { Text("Title") },
+            modifier = Modifier.fillMaxWidth().weight(1f),
+            colors = textFieldColors()
+        )
 
-            Button(
-                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
-                enabled = klipTextValue.text.isNotBlank(),
-                onClick = {
-                    val updatedKlip =
-                    actionHandler(
-                        EditorAction.HandleSave(
-                            titleTextValue.text.takeIf { it.isNotBlank() },
-                            klipTextValue.text
-                        )
+        Spacer(Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = klipTextValue,
+            onValueChange = {
+                klipTextValue = it
+            },
+            label = { Text("Add your klip here") },
+            isError = klipTextValue.text.isBlank(),
+            colors = textFieldColors(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .weight(2f)
+        )
+
+        Spacer(Modifier.height(16.dp))
+
+        Button(
+            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.secondary),
+            enabled = klipTextValue.text.isNotBlank(),
+            onClick = {
+                actionHandler(
+                    EditorAction.HandleSave(
+                        titleTextValue.text.takeIf { it.isNotBlank() },
+                        klipTextValue.text
                     )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Text("Save")
-            }
+                )
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Save")
         }
     }
 }
