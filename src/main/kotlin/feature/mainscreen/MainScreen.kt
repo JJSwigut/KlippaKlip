@@ -82,7 +82,9 @@ import feature.mainscreen.MainAction.HandleCopy
 import feature.mainscreen.MainAction.HandleCreateClicked
 import feature.mainscreen.MainAction.HandleDelete
 import feature.mainscreen.MainAction.HandlePin
+import ui.components.KlipTip
 import ui.components.QuickMessage
+import ui.components.SearchBar
 import utils.onDoubleClick
 import utils.onHover
 
@@ -154,13 +156,28 @@ private fun MainContent(
                     }
                 }
 
-                if (viewState.historyKlips.isNotEmpty()) {
-                    Spacer(Modifier.width(8.dp))
-                    HistoryColumn(
-                        modifier = Modifier.weight(1f),
-                        historyKlips = viewState.historyKlips,
-                        actionHandler = actionHandler
+                Column(modifier = Modifier.weight(1.25f)) {
+                    Spacer(Modifier.height(8.dp))
+
+                    var searchQuery by remember { mutableStateOf("")}
+
+                    SearchBar(
+                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                        searchQuery = searchQuery,
+                        onSearchQueryChange = { query ->
+                            searchQuery = query
+                            actionHandler(MainAction.HandleSearch(searchQuery))
+                        },
                     )
+                    Spacer(Modifier.height(8.dp))
+
+                    if (viewState.historyKlips.isNotEmpty()) {
+                        HistoryColumn(
+                            modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                            historyKlips = viewState.historyKlips,
+                            actionHandler = actionHandler
+                        )
+                    }
                 }
             }
             Spacer(Modifier.height(8.dp))
@@ -325,24 +342,6 @@ private fun HistoryCard(
     }
 }
 
-@Composable
-private fun KlipTip(
-    text: String,
-) {
-    Column(
-        modifier = Modifier.background(
-            color = MaterialTheme.colors.secondary,
-            shape = MaterialTheme.shapes.large
-        ).scrollable(rememberScrollState(), Vertical)
-    ) {
-        Text(
-            style = MaterialTheme.typography.body2,
-            text = text,
-            color = MaterialTheme.colors.onSecondary,
-            modifier = Modifier.padding(8.dp)
-        )
-    }
-}
 
 @Composable
 private fun PinnedKlipRow(
@@ -353,6 +352,7 @@ private fun PinnedKlipRow(
     LazyRow(
         modifier = modifier,
         horizontalArrangement = spacedBy(4.dp),
+        contentPadding = PaddingValues(horizontal = 4.dp)
     ) {
         items(pinnedKlips) { klip ->
             KlipCard(

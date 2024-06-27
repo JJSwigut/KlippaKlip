@@ -8,13 +8,22 @@ import com.jjswigut.klippaklip.database.KlipEntity
 import data.models.HistoryKlip
 import data.models.Klip
 import data.models.Klippable
+import data.models.toKlips
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import repository.klips.KlipRepo
 
-class KlipRepoImpl(private val db: Database): KlipRepo {
+class KlipRepoImpl(private val db: Database) : KlipRepo {
 
-    override val historyKlips: Flow<List<HistoryEntity>> = db.historyQueries.selectAllHistory().asFlow().mapToList(Dispatchers.IO)
-    override val klips: Flow<List<KlipEntity>> = db.klippedQueries.selectAllKlipEntities().asFlow().mapToList(Dispatchers.IO)
+    override suspend fun getAllKlips(): Flow<List<KlipEntity>> =
+        db.klippedQueries.selectAllKlipEntities().asFlow().mapToList(Dispatchers.IO)
+
+    override suspend fun searchKlips(query: String): Flow<List<KlipEntity>> =
+        db.klippedQueries.searchKlipEntities(query).asFlow().mapToList(Dispatchers.IO)
+
+    override val historyKlips: Flow<List<HistoryEntity>> =
+        db.historyQueries.selectAllHistory().asFlow().mapToList(Dispatchers.IO)
 
     override suspend fun upsertKlip(
         id: Long?,

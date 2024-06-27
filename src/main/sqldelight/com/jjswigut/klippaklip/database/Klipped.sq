@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS  KlipEntity (
+CREATE TABLE IF NOT EXISTS KlipEntity (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     itemText TEXT NOT NULL,
@@ -7,7 +7,15 @@ CREATE TABLE IF NOT EXISTS  KlipEntity (
 );
 
 selectAllKlipEntities:
-SELECT * FROM KlipEntity;
+SELECT *
+FROM KlipEntity
+ORDER BY isPinned DESC, timestamp DESC;
+
+searchKlipEntities:
+SELECT *
+FROM KlipEntity
+WHERE (title LIKE '%' || ?1 || '%') OR (itemText LIKE '%' || ?1 || '%')
+ORDER BY isPinned DESC, timestamp DESC;
 
 deleteKlipEntity:
 DELETE FROM KlipEntity
@@ -15,4 +23,4 @@ WHERE id = ?;
 
 upsertKlipEntity:
 INSERT OR REPLACE INTO KlipEntity(id, title, itemText, isPinned, timestamp)
-VALUES (?, ?, ?, ?,?);
+VALUES (?, ?, ?, ?, ?);

@@ -13,10 +13,13 @@ import feature.mainscreen.MainAction.HandleDelete
 import feature.mainscreen.MainAction.HandleDeleteHistory
 import feature.mainscreen.MainAction.HandleEdit
 import feature.mainscreen.MainAction.HandlePin
+import feature.mainscreen.MainAction.HandleSearch
 import feature.mainscreen.MainAction.Initialize
+import feature.mainscreen.MainOutput.CreateKlip
+import feature.mainscreen.MainOutput.EditKlip
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import repository.klips.KlipRepo
 import repository.settings.Prefs
@@ -28,6 +31,9 @@ class MainViewModel(
     output: (Output) -> Unit,
 ) : DesktopViewModel<MainViewState>(MainViewState(), output) {
 
+    private var currentQuery: String = ""
+    private var currentKlipsJob: Job? = null
+
     init {
         handleAction(Initialize)
     }
@@ -35,28 +41,54 @@ class MainViewModel(
     fun handleAction(action: MainAction) {
         viewModelScope.launch(dispatcher) {
             when (action) {
-                is Initialize -> intialize()
+                is Initialize -> initialize()
                 is HandleCopy -> handleCopy(action.klip)
-                is HandleCreateClicked -> sendOutput(MainOutput.CreateKlip)
-                is HandleDelete -> repo.deleteKlip(action.klip)
+                is HandleCreateClicked -> sendOutput(CreateKlip)
+                is HandleDelete -> handleDelete(action.klip)
                 is HandlePin -> handlePin(action.klip)
                 is HandleDeleteHistory -> repo.deleteAllHistory()
-                is HandleEdit -> sendOutput(MainOutput.EditKlip(action.klip))
+                is HandleEdit -> sendOutput(EditKlip(action.klip))
+                is HandleSearch -> handleSearch(action.query)
             }
         }
     }
 
-    private fun handleCopy(klip: Klippable) {
-        sendOutput(MainOutput.CopyKlip(klip))
-        viewModelScope.launch(dispatcher) {
-            updateState {
-                copy(showCopiedMessage = true)
-            }
-            delay(2000)
-            updateState {
-                copy(showCopiedMessage = false)
+    private fun initialize() {
+        observeKlips()
+        observeHistoryKlips()
+    }
+
+    private fun observeKlips() {
+        currentKlipsJob?.cancel()
+        currentKlipsJob = viewModelScope.launch(dispatcher) {
+            if (currentQuery.isBlank()) {
+                repo.getAllKlips()
+            } else {
+                repo.searchKlips(currentQuery)
+            }.collect { klips ->
+                val sortedKlips = klips.toKlips().sortKlipsBasedOnPrefs()
+                updateState {
+                    copy(
+                        pinnedKlips = sortedKlips.pinnedKlips,
+                        klips = sortedKlips.klips
+                    )
+                }
             }
         }
+    }
+
+    private fun observeHistoryKlips() {
+        viewModelScope.launch(dispatcher) {
+            repo.historyKlips.collect { historyKlips ->
+                updateState {
+                    copy(historyKlips = historyKlips.toKlips())
+                }
+            }
+        }
+    }
+
+    private suspend fun handleDelete(klip: Klippable) {
+        repo.deleteKlip(klip)
     }
 
     private suspend fun handlePin(klip: Klip) {
@@ -69,22 +101,17 @@ class MainViewModel(
         )
     }
 
-    private suspend fun intialize() {
-        combine(repo.klips,repo.historyKlips){
-            klips, historyKlips ->
-            Pair(
-                klips.toKlips(),
-                historyKlips.toKlips()
-            )
-        }.collect { (klips, historyKlips) ->
-            val (pinnedKlips, regularKlips) = klips.sortKlipsBasedOnPrefs()
-            updateState {
-                copy(
-                    pinnedKlips = pinnedKlips,
-                    klips = regularKlips,
-                    historyKlips = historyKlips
-                )
-            }
+    private fun handleSearch(query: String) {
+        currentQuery = query
+        observeKlips()
+    }
+
+    private fun handleCopy(klip: Klippable) {
+        sendOutput(MainOutput.CopyKlip(klip))
+        viewModelScope.launch(dispatcher) {
+            updateState { copy(showCopiedMessage = true) }
+            delay(2000)
+            updateState { copy(showCopiedMessage = false) }
         }
     }
 
@@ -98,6 +125,7 @@ class MainViewModel(
                 SortOrder.Alphabetical -> sortedBy { it.title ?: it.itemText }
             }
         }
+
         with(prefs.settings.value) {
             return SortedKlips(
                 pinnedKlips.sortKlips(pinnedSortOrder),
@@ -126,6 +154,7 @@ sealed interface MainAction {
     data class HandleCopy(val klip: Klippable): MainAction
     data class HandlePin(val klip: Klip): MainAction
     data class HandleEdit(val klip: Klip): MainAction
+    data class HandleSearch(val query: String): MainAction
     data object HandleDeleteHistory : MainAction
 
 }
