@@ -1,8 +1,8 @@
 [versions]
-sqlDelight = "2.0.0"
+sqlDelight = "2.0.2"
 jNativeHook = "2.2.1"
-kotlin = "1.9.22"
-compose = "1.6.0"
+kotlin = "1.9.23"
+compose = "1.6.11"
 json = "1.6.3"
 
 [libraries]

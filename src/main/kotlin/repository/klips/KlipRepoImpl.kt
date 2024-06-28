@@ -17,10 +17,10 @@ import repository.klips.KlipRepo
 class KlipRepoImpl(private val db: Database) : KlipRepo {
 
     override suspend fun getAllKlips(): Flow<List<KlipEntity>> =
-        db.klippedQueries.selectAllKlipEntities().asFlow().mapToList(Dispatchers.IO)
+        db.klipEntityQueries.selectAllKlipEntities().asFlow().mapToList(Dispatchers.IO)
 
     override suspend fun searchKlips(query: String): Flow<List<KlipEntity>> =
-        db.klippedQueries.searchKlipEntities(query).asFlow().mapToList(Dispatchers.IO)
+        db.klipEntityQueries.searchKlipEntities(query, query).asFlow().mapToList(Dispatchers.IO)
 
     override val historyKlips: Flow<List<HistoryEntity>> =
         db.historyQueries.selectAllHistory().asFlow().mapToList(Dispatchers.IO)
@@ -33,7 +33,7 @@ class KlipRepoImpl(private val db: Database) : KlipRepo {
         timeCreated: Long?
     ) {
         runCatching {
-            db.klippedQueries.upsertKlipEntity(
+            db.klipEntityQueries.upsertKlipEntity(
                 id = id,
                 title = title,
                 itemText = itemText,
@@ -47,7 +47,7 @@ class KlipRepoImpl(private val db: Database) : KlipRepo {
         runCatching {
             when (klip) {
                 is HistoryKlip -> db.historyQueries.deleteHistoryEntity(klip.id)
-                is Klip -> db.klippedQueries.deleteKlipEntity(klip.id)
+                is Klip -> db.klipEntityQueries.deleteKlipEntity(klip.id)
             }
         }
     }
