@@ -12,8 +12,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation.Vertical
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Arrangement.SpaceBetween
 import androidx.compose.foundation.layout.Arrangement.spacedBy
@@ -22,7 +20,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,7 +34,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.window.WindowDraggableArea
 import androidx.compose.material.Button
 import androidx.compose.material.Divider
@@ -58,7 +54,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -67,11 +62,9 @@ import androidx.compose.ui.Alignment.Companion.TopEnd
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.style.TextOverflow.Companion
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
@@ -372,17 +365,15 @@ private fun KlipCard(
     actionHandler: (MainAction) -> Unit,
 ) {
     var showActions by remember { mutableStateOf(false) }
-    var shouldShowToolTip by remember { mutableStateOf(true) }
-    var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
+    var showToolTip by remember { mutableStateOf(true) }
 
     Box(
         modifier = modifier
             .onDoubleClick {
                 actionHandler(HandleCopy(item))
             }
-            .onHover {
-                showActions = it
-                shouldShowToolTip = it && (textLayoutResult?.hasVisualOverflow == true)
+            .onHover { hovered ->
+                showActions = hovered
             }
             .background(color = MaterialTheme.colors.primary, shape = MaterialTheme.shapes.medium)
             .size(width = 175.dp, height = 125.dp)
@@ -390,7 +381,7 @@ private fun KlipCard(
         TooltipArea(
             delayMillis = 750,
             tooltip = {
-                if (shouldShowToolTip) {
+                if (showToolTip) {
                     KlipTip(item.itemText)
                 }
             }
@@ -415,13 +406,11 @@ private fun KlipCard(
                     color = MaterialTheme.colors.onPrimary,
                     text = item.itemText,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.body2,
-                    onTextLayout = { layoutResult ->
-                        textLayoutResult = layoutResult
-                    }
+                    style = MaterialTheme.typography.body2
                 )
             }
         }
+
         AnimatedVisibility(
             modifier = Modifier.align(CenterEnd),
             visible = showActions,
@@ -431,7 +420,10 @@ private fun KlipCard(
             CardActions(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(20.dp),
+                    .width(20.dp)
+                    .onHover(showBorder = false) { hovered ->
+                        showToolTip = !hovered
+                    },
                 pinIcon = if (item.isPinned) Icons.Outlined.PushPin else Icons.Filled.PushPin,
                 onCopy = { actionHandler(HandleCopy(item)) },
                 onPin = { actionHandler(HandlePin(item)) },
