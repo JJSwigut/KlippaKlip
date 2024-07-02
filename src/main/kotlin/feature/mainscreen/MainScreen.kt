@@ -64,6 +64,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextDecoration.Companion
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -176,7 +178,7 @@ private fun MainContent(
             }
             Spacer(Modifier.height(8.dp))
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(start =  4.dp),
                 verticalAlignment = CenterVertically,
                 horizontalArrangement = SpaceBetween
             ) {
@@ -365,7 +367,7 @@ private fun KlipCard(
     actionHandler: (MainAction) -> Unit,
 ) {
     var showActions by remember { mutableStateOf(false) }
-    var showToolTip by remember { mutableStateOf(true) }
+    var showToolTip by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -398,7 +400,7 @@ private fun KlipCard(
                         text = title,
                         overflow = TextOverflow.Ellipsis,
                         fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.body2
+                        style = MaterialTheme.typography.body2.copy(textDecoration = TextDecoration.Underline)
                     )
                 }
 
@@ -406,7 +408,10 @@ private fun KlipCard(
                     color = MaterialTheme.colors.onPrimary,
                     text = item.itemText,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.body2
+                    style = MaterialTheme.typography.body2,
+                    onTextLayout = {
+                        showToolTip = it.didOverflowHeight
+                    }
                 )
             }
         }

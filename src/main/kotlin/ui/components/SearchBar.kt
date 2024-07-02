@@ -24,6 +24,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import kotlinx.coroutines.delay
 
 @Composable
 fun SearchBar(
@@ -86,6 +87,7 @@ fun SearchBar(
     )
     if (autoFocus) {
         LaunchedEffect(Unit) {
+            delay(200)
             focusRequester.requestFocus()
         }
     }
