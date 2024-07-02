@@ -367,7 +367,8 @@ private fun KlipCard(
     actionHandler: (MainAction) -> Unit,
 ) {
     var showActions by remember { mutableStateOf(false) }
-    var showToolTip by remember { mutableStateOf(false) }
+    var hasVisualOverflow by remember { mutableStateOf(false) }
+    var isHoveringActions by remember { mutableStateOf(false) }
 
     Box(
         modifier = modifier
@@ -383,7 +384,7 @@ private fun KlipCard(
         TooltipArea(
             delayMillis = 750,
             tooltip = {
-                if (showToolTip) {
+                if (hasVisualOverflow && !isHoveringActions) {
                     KlipTip(item.itemText)
                 }
             }
@@ -409,8 +410,8 @@ private fun KlipCard(
                     text = item.itemText,
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.body2,
-                    onTextLayout = {
-                        showToolTip = it.didOverflowHeight
+                    onTextLayout = { textLayoutResult ->
+                        hasVisualOverflow = textLayoutResult.hasVisualOverflow
                     }
                 )
             }
@@ -427,7 +428,7 @@ private fun KlipCard(
                     .fillMaxHeight()
                     .width(20.dp)
                     .onHover(showBorder = false) { hovered ->
-                        showToolTip = !hovered
+                        isHoveringActions = hovered
                     },
                 pinIcon = if (item.isPinned) Icons.Outlined.PushPin else Icons.Filled.PushPin,
                 onCopy = { actionHandler(HandleCopy(item)) },
